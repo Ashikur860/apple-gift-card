@@ -12,7 +12,39 @@
 <body>
   <div class="ambient-glow"></div>
   
-  <div class="admin-layout">
+  <!-- Admin Login Screen -->
+  <div id="admin-login-screen" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="auth-card" style="max-width: 400px; width: 100%;">
+      <div class="auth-header">
+        <div class="auth-logo"><img src="apple logggoo.png" alt="Apple" style="height: 48px; width: auto;"></div>
+        <h1 class="auth-title">Admin Access</h1>
+        <p class="auth-subtitle">Enter credentials to access admin panel</p>
+      </div>
+      
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label class="form-label">Admin Email</label>
+          <input type="email" class="form-input" id="admin-email" value="admin@applerewards.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Admin Password</label>
+          <input type="password" class="form-input" id="admin-password" value="admin123" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-full" style="margin-top: 8px;">
+          Access Admin Panel
+        </button>
+      </form>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <a href="index.html" style="color: var(--text-secondary); font-size: 14px; text-decoration: none;">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Admin Panel (Hidden by default) -->
+  <div class="admin-layout" id="admin-panel" style="display: none;">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
       <div class="admin-logo">
@@ -232,14 +264,32 @@
       app.initSupabase();
       
       const isAdmin = localStorage.getItem('is_admin') === 'true';
-      const user = await app.getCurrentUser();
       
-      if (!isAdmin && (!user || user.role !== 'admin')) {
-        window.location.href = 'login.html';
-        return;
+      if (isAdmin) {
+        // Already logged in - show admin panel
+        document.getElementById('admin-login-screen').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'grid';
+        await loadOverview();
       }
       
-      await loadOverview();
+      // Handle admin login form
+      document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('admin-email').value;
+        const password = document.getElementById('admin-password').value;
+        
+        // Check against config
+        if (email === CONFIG.ADMIN_EMAIL && password === CONFIG.ADMIN_PASSWORD) {
+          localStorage.setItem('is_admin', 'true');
+          document.getElementById('admin-login-screen').style.display = 'none';
+          document.getElementById('admin-panel').style.display = 'grid';
+          loadOverview();
+          app.showToast('Welcome to Admin Panel', 'success');
+        } else {
+          app.showToast('Invalid admin credentials', 'error');
+        }
+      });
     });
     
     function showTab(tab) {

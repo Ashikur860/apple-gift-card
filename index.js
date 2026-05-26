@@ -7,7 +7,57 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadRewards();
   setupFAQ();
   setupClaimForm();
+  updateNavbar();
 });
+
+// Update Navbar and Footer based on login status
+function updateNavbar() {
+  const navLinks = document.getElementById('nav-links');
+  const footerLinks = document.getElementById('footer-account-links');
+  const user = localStorage.getItem('giftcard_user');
+  
+  if (user) {
+    // User is logged in - show Dashboard and Sign Out
+    navLinks.innerHTML = `
+      <a href="#rewards" class="nav-link">Rewards</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <button class="btn btn-secondary" style="padding: 8px 20px;" onclick="logout()">Sign Out</button>
+    `;
+    // Update footer
+    if (footerLinks) {
+      footerLinks.innerHTML = `
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" onclick="logout(); return false;">Sign Out</a></li>
+      `;
+    }
+  } else {
+    // User is not logged in - show Sign In and Register
+    navLinks.innerHTML = `
+      <a href="#rewards" class="nav-link">Rewards</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="login.html" class="btn btn-secondary" style="padding: 8px 20px;">Sign In</a>
+      <a href="register.html" class="btn btn-primary" style="padding: 8px 20px;">Register</a>
+    `;
+    // Update footer
+    if (footerLinks) {
+      footerLinks.innerHTML = `
+        <li><a href="login.html">Sign In</a></li>
+        <li><a href="register.html">Register</a></li>
+      `;
+    }
+  }
+}
+
+// Logout function
+async function logout() {
+  await app.signOut();
+  localStorage.removeItem('giftcard_user');
+  localStorage.removeItem('giftcard_claims');
+  window.location.href = 'index.html';
+}
 
 // Load Rewards
 async function loadRewards() {
@@ -47,23 +97,52 @@ function createRewardCard(r) {
   `;
 }
 
-// FAQ Accordion
+// FAQ Accordion - Simple Toggle
 function setupFAQ() {
-  document.querySelectorAll('.faq-item').forEach(item => {
-    const question = item.querySelector('.faq-question');
-    const answer = item.querySelector('.faq-answer');
-    
-    question.addEventListener('click', () => {
-      const isActive = question.classList.contains('active');
-      document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
-      document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = null);
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', function() {
+      const faqItem = this.parentElement;
+      const answer = faqItem.querySelector('.faq-answer');
+      const isOpen = this.classList.contains('active');
       
-      if (!isActive) {
-        question.classList.add('active');
+      // Close all first
+      document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+      document.querySelectorAll('.faq-answer').forEach(a => {
+        a.style.maxHeight = null;
+        a.style.paddingTop = null;
+      });
+      
+      // Open clicked if was closed
+      if (!isOpen) {
+        this.classList.add('active');
         answer.style.maxHeight = answer.scrollHeight + 'px';
+        answer.style.paddingTop = '10px';
       }
     });
   });
+}
+
+// Simple toggle function for inline onclick
+function toggleFAQ(btn) {
+  const item = btn.parentElement;
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = btn.classList.contains('active');
+  
+  // Close all
+  document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+  document.querySelectorAll('.faq-answer').forEach(a => {
+    a.style.maxHeight = null;
+    a.style.paddingTop = null;
+  });
+  
+  // Open this one if it was closed
+  if (!isOpen) {
+    btn.classList.add('active');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    answer.style.paddingTop = '10px';
+  }
 }
 
 // Claim Modal
@@ -185,6 +264,11 @@ function copyRewardCode() {
   });
 }
 
+// Scroll to Rewards
+function scrollToRewards() {
+  document.getElementById('rewards').scrollIntoView({ behavior: 'smooth' });
+}
+
 // Global functions
 window.openClaimModal = openClaimModal;
 window.closeClaimModal = closeClaimModal;
@@ -192,5 +276,8 @@ window.closeSuccessModal = closeSuccessModal;
 window.copyRewardCode = copyRewardCode;
 window.showProcessing = showProcessing;
 window.hideProcessing = hideProcessing;
+window.scrollToRewards = scrollToRewards;
+window.logout = logout;
+window.toggleFAQ = toggleFAQ;
 
 window.onclick = e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); };

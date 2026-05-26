@@ -22,7 +22,7 @@
         <img src="apple logggoo.png" alt="Apple" style="height: 28px; width: auto; margin-right: 8px;">
         Rewards
       </a>
-      <div class="nav-links">
+      <div class="nav-links" id="nav-links">
         <a href="#rewards" class="nav-link">Rewards</a>
         <a href="#features" class="nav-link">Features</a>
         <a href="#faq" class="nav-link">FAQ</a>
@@ -112,12 +112,13 @@
     </div>
   </section>
 
-  <!-- Features Section - Bento Grid -->
+  <!-- Features Section - Apple-Style Bento Grid -->
   <section class="section" id="features">
     <div class="container">
       <div class="section-header">
         <p class="section-label">Why Choose Us</p>
-        <h2 class="section-title">Designed for Excellence</h2>
+        <h2 class="section-title">Designed for<br><span style="background: var(--gradient-gold); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Excellence</span></h2>
+        <p class="section-subtitle">Crafted with precision. Built for performance. Designed for you.</p>
       </div>
       
       <div class="features-bento">
@@ -125,39 +126,39 @@
           <div class="bento-icon">⚡</div>
           <div>
             <h3 class="bento-title">Instant Delivery</h3>
-            <p class="bento-desc">Your rewards are generated and delivered within seconds. No waiting, no hassle.</p>
+            <p class="bento-desc">Your rewards are generated and delivered within seconds. Experience the speed of modern technology with our automated system.</p>
           </div>
         </div>
         
         <div class="bento-card" style="--icon-bg: var(--gradient-green);">
           <div class="bento-icon">🔒</div>
           <div>
-            <h3 class="bento-title">Secure</h3>
-            <p class="bento-desc">Enterprise-grade security protects every transaction.</p>
+            <h3 class="bento-title">Bank-Grade Security</h3>
+            <p class="bento-desc">Enterprise-level encryption protects every transaction.</p>
           </div>
         </div>
         
         <div class="bento-card" style="--icon-bg: var(--gradient-purple);">
           <div class="bento-icon">✨</div>
           <div>
-            <h3 class="bento-title">Premium</h3>
-            <p class="bento-desc">Curated selection of high-value digital rewards.</p>
+            <h3 class="bento-title">Premium Quality</h3>
+            <p class="bento-desc">Handpicked selection of high-value digital rewards.</p>
           </div>
         </div>
         
         <div class="bento-card" style="--icon-bg: var(--gradient-pink);">
           <div class="bento-icon">📱</div>
           <div>
-            <h3 class="bento-title">Mobile Ready</h3>
-            <p class="bento-desc">Claim rewards from any device, anywhere.</p>
+            <h3 class="bento-title">Universal Access</h3>
+            <p class="bento-desc">Claim rewards from any device — iPhone, iPad, Mac, or web.</p>
           </div>
         </div>
         
         <div class="bento-card" style="--icon-bg: var(--gradient-orange);">
           <div class="bento-icon">🎯</div>
           <div>
-            <h3 class="bento-title">Verified</h3>
-            <p class="bento-desc">Every reward code is tested and verified.</p>
+            <h3 class="bento-title">Verified Authentic</h3>
+            <p class="bento-desc">Every reward code is tested, verified, and guaranteed valid.</p>
           </div>
         </div>
       </div>
@@ -174,61 +175,66 @@
       
       <div class="faq-container">
         <div class="faq-item">
-          <button class="faq-question">
+          <button class="faq-question" onclick="toggleFAQ(this)">
             <span>How do I claim a reward?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              Simply select a reward card, click "Claim Reward", and submit your information. Our system will verify and generate your unique reward code within 10-15 seconds.
+              <p>Simply select a reward card, click <strong>"Claim Reward"</strong>, and submit your information. Our system will verify and generate your unique reward code within 10-15 seconds.</p>
+              <p style="margin-top: 12px;"><a href="#rewards" class="faq-link" onclick="scrollToRewards()">Browse Rewards →</a></p>
             </div>
           </div>
         </div>
         
         <div class="faq-item">
-          <button class="faq-question">
+          <button class="faq-question" onclick="toggleFAQ(this)">
             <span>Is this service free?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              Yes! Creating an account and claiming rewards is completely free. We generate unique reward codes for verified users at no cost.
+              <p>Yes! Creating an account and claiming rewards is <strong>completely free</strong>. We generate unique reward codes for verified users at no cost.</p>
+              <p style="margin-top: 12px;"><a href="register.html" class="faq-link">Create Free Account →</a></p>
             </div>
           </div>
         </div>
         
         <div class="faq-item">
-          <button class="faq-question">
+          <button class="faq-question" onclick="toggleFAQ(this)">
             <span>How long are reward codes valid?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              All reward codes are valid for 30 days from the date of generation. You can view all your active codes in your dashboard.
+              <p>All reward codes are valid for <strong>30 days</strong> from the date of generation. You can view all your active codes in your dashboard.</p>
+              <p style="margin-top: 12px;"><a href="dashboard.html" class="faq-link">View My Codes →</a></p>
             </div>
           </div>
         </div>
         
         <div class="faq-item">
-          <button class="faq-question">
+          <button class="faq-question" onclick="toggleFAQ(this)">
             <span>Can I claim multiple rewards?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              Absolutely! You can claim as many rewards as you'd like. Each claim is tracked separately in your dashboard with its own unique code.
+              <p>Absolutely! You can claim <strong>as many rewards as you'd like</strong>. Each claim is tracked separately in your dashboard with its own unique code.</p>
+              <p style="margin-top: 12px;"><a href="dashboard.html" class="faq-link">Track My Claims →</a></p>
             </div>
           </div>
         </div>
         
         <div class="faq-item">
-          <button class="faq-question">
+          <button class="faq-question" onclick="toggleFAQ(this)">
             <span>Is my information secure?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-content">
-              We use enterprise-grade encryption and never store sensitive information. Your data is protected with the same security standards used by major tech companies.
+              <p>We use <strong>enterprise-grade encryption</strong> and never store sensitive information. Your data is protected with the same security standards used by major tech companies.</p>
+              <p style="margin-top: 12px;"><a href="privacy.html" class="faq-link">Read Privacy Policy →</a></p>
             </div>
           </div>
         </div>
@@ -265,18 +271,17 @@
         
         <div>
           <h4 class="footer-title">Account</h4>
-          <ul class="footer-links">
+          <ul class="footer-links" id="footer-account-links">
             <li><a href="login.html">Sign In</a></li>
             <li><a href="register.html">Register</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
           </ul>
         </div>
         
         <div>
           <h4 class="footer-title">Legal</h4>
           <ul class="footer-links">
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
           </ul>
         </div>
       </div>

@@ -51,40 +51,7 @@
         <div class="auth-footer">
           Don't have an account? <a href="register.html">Create one</a>
         </div>
-        
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-primary); text-align: center;">
-          <button class="btn btn-secondary w-full" id="admin-login-btn">
-            Sign in as Admin
-          </button>
-        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Admin Modal -->
-  <div class="modal-overlay" id="admin-modal">
-    <div class="modal">
-      <button class="modal-close" onclick="closeAdminModal()">×</button>
-      <div class="modal-header">
-        <h3 class="modal-title">Admin Access</h3>
-        <p class="modal-subtitle">Enter admin credentials</p>
-      </div>
-      
-      <form id="admin-form">
-        <div class="form-group">
-          <label class="form-label">Admin Email</label>
-          <input type="email" class="form-input" id="admin-email" required>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Admin Password</label>
-          <input type="password" class="form-input" id="admin-password" required>
-        </div>
-        
-        <button type="submit" class="btn btn-primary w-full" style="margin-top: 8px;">
-          Access Admin Panel
-        </button>
-      </form>
     </div>
   </div>
 
@@ -137,32 +104,7 @@
         }
       });
       
-      // Admin login button
-      document.getElementById('admin-login-btn').addEventListener('click', () => {
-        document.getElementById('admin-modal').classList.add('active');
-      });
-      
-      // Admin form
-      document.getElementById('admin-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('admin-email').value;
-        const password = document.getElementById('admin-password').value;
-        
-        if (app.isAdmin(email, password)) {
-          localStorage.setItem('is_admin', 'true');
-          window.location.href = 'admin.html';
-        } else {
-          app.showToast('Invalid admin credentials', 'error');
-        }
-      });
     });
-    
-    function closeAdminModal() {
-      document.getElementById('admin-modal').classList.remove('active');
-    }
-    
-    window.closeAdminModal = closeAdminModal;
     
     // Close modal on overlay click
     window.onclick = function(event) {
