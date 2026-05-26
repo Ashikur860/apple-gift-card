@@ -71,26 +71,48 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      app.initSupabase();
+      // Initialize Supabase
+      const supabaseClient = app.initSupabase();
+      if (!supabaseClient) {
+        console.error('Failed to initialize Supabase');
+        alert('Configuration error. Please check console.');
+        return;
+      }
+      console.log('Supabase initialized successfully');
       
       // Check if already logged in
-      const user = await app.getCurrentUser();
-      if (user) {
-        localStorage.setItem('giftcard_user', JSON.stringify(user));
-        window.location.href = 'dashboard.html';
-        return;
+      try {
+        const user = await app.getCurrentUser();
+        if (user) {
+          localStorage.setItem('giftcard_user', JSON.stringify(user));
+          window.location.href = 'dashboard.html';
+          return;
+        }
+      } catch (err) {
+        console.log('No existing session');
       }
       
       // Register form
-      document.getElementById('register-form').addEventListener('submit', async (e) => {
+      const form = document.getElementById('register-form');
+      const btn = document.getElementById('register-btn');
+      
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log('Form submitted');
         
-        const fullName = document.getElementById('full-name').value;
-        const email = document.getElementById('email').value;
+        const fullName = document.getElementById('full-name').value.trim();
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
         
+        console.log('Registration attempt:', { email, fullName });
+        
         // Validation
+        if (!fullName || !email || !password) {
+          app.showToast('Please fill in all fields', 'error');
+          return;
+        }
+        
         if (password !== confirmPassword) {
           app.showToast('Passwords do not match', 'error');
           return;
@@ -101,35 +123,51 @@
           return;
         }
         
-        const btn = document.getElementById('register-btn');
-        btn.dataset.originalText = btn.textContent;
-        app.setLoading(btn, true);
+        // Show loading
+        btn.disabled = true;
+        btn.textContent = 'Creating Account...';
         
-        // Create account
-        const result = await app.signUp(email, password, fullName);
-        
-        if (!result.success) {
-          app.showToast(result.error, 'error');
-          app.setLoading(btn, false);
-          return;
-        }
-        
-        app.showToast('Account created! Signing you in...', 'success');
-        
-        // Auto sign in
-        setTimeout(async () => {
-          const loginResult = await app.signIn(email, password);
+        try {
+          // Create account
+          console.log('Calling signUp...');
+          const result = await app.signUp(email, password, fullName);
+          console.log('SignUp result:', result);
           
-          if (loginResult.success) {
-            const user = await app.getCurrentUser();
-            if (user) {
-              localStorage.setItem('giftcard_user', JSON.stringify(user));
-              window.location.href = 'dashboard.html';
-            }
-          } else {
-            window.location.href = 'login.html';
+          if (!result.success) {
+            app.showToast(result.error || 'Registration failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Create Account';
+            return;
           }
-        }, 1500);
+          
+          app.showToast('Account created! Signing you in...', 'success');
+          
+          // Auto sign in
+          setTimeout(async () => {
+            try {
+              const loginResult = await app.signIn(email, password);
+              console.log('Login result:', loginResult);
+              
+              if (loginResult.success) {
+                const user = await app.getCurrentUser();
+                if (user) {
+                  localStorage.setItem('giftcard_user', JSON.stringify(user));
+                  window.location.href = 'dashboard.html';
+                }
+              } else {
+                window.location.href = 'login.html?registered=true';
+              }
+            } catch (err) {
+              console.error('Auto-login error:', err);
+              window.location.href = 'login.html';
+            }
+          }, 1500);
+        } catch (err) {
+          console.error('Registration error:', err);
+          app.showToast('Registration failed: ' + err.message, 'error');
+          btn.disabled = false;
+          btn.textContent = 'Create Account';
+        }
       });
     });
   </script>

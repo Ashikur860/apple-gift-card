@@ -60,47 +60,79 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      app.initSupabase();
-      
-      // Check if already logged in
-      const user = await app.getCurrentUser();
-      if (user) {
-        localStorage.setItem('giftcard_user', JSON.stringify(user));
-        if (user.role === 'admin') {
-          window.location.href = 'admin.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
+      // Initialize Supabase
+      const supabaseClient = app.initSupabase();
+      if (!supabaseClient) {
+        console.error('Failed to initialize Supabase');
+        alert('Configuration error. Please check console.');
         return;
       }
+      console.log('Supabase initialized successfully');
       
-      // Login form
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const btn = document.getElementById('login-btn');
-        btn.dataset.originalText = btn.textContent;
-        app.setLoading(btn, true);
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        
-        const result = await app.signIn(email, password);
-        
-        if (!result.success) {
-          app.showToast(result.error, 'error');
-          app.setLoading(btn, false);
-          return;
-        }
-        
+      // Check if already logged in
+      try {
         const user = await app.getCurrentUser();
         if (user) {
+          console.log('Already logged in:', user);
           localStorage.setItem('giftcard_user', JSON.stringify(user));
           if (user.role === 'admin') {
             window.location.href = 'admin.html';
           } else {
             window.location.href = 'dashboard.html';
           }
+          return;
+        }
+      } catch (err) {
+        console.log('No existing session');
+      }
+      
+      // Login form
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Login form submitted');
+        
+        const btn = document.getElementById('login-btn');
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        
+        console.log('Login attempt:', { email });
+        
+        if (!email || !password) {
+          app.showToast('Please fill in all fields', 'error');
+          return;
+        }
+        
+        // Show loading
+        btn.disabled = true;
+        btn.textContent = 'Signing In...';
+        
+        try {
+          const result = await app.signIn(email, password);
+          console.log('SignIn result:', result);
+          
+          if (!result.success) {
+            app.showToast(result.error || 'Login failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
+            return;
+          }
+          
+          const user = await app.getCurrentUser();
+          console.log('Current user:', user);
+          
+          if (user) {
+            localStorage.setItem('giftcard_user', JSON.stringify(user));
+            if (user.role === 'admin') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'dashboard.html';
+            }
+          }
+        } catch (err) {
+          console.error('Login error:', err);
+          app.showToast('Login failed: ' + err.message, 'error');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
         }
       });
       
