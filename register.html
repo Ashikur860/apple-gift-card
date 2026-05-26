@@ -12,7 +12,6 @@
 <body>
   <div class="ambient-glow"></div>
   
-  <!-- Nav -->
   <nav class="nav">
     <div class="container nav-content">
       <a href="index.html" class="nav-logo">
@@ -22,7 +21,6 @@
     </div>
   </nav>
 
-  <!-- Auth Page -->
   <div class="auth-page">
     <div class="container-narrow">
       <div class="auth-card">
@@ -54,7 +52,7 @@
             <input type="password" class="form-input" id="confirm-password" placeholder="Confirm your password" required>
           </div>
           
-          <button type="submit" class="btn btn-primary w-full" id="register-btn" style="margin-top: 8px;">
+          <button type="button" class="btn btn-primary w-full" id="register-btn" style="margin-top: 8px;">
             Create Account
           </button>
         </form>
@@ -66,109 +64,127 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize Supabase
-      const supabaseClient = app.initSupabase();
-      if (!supabaseClient) {
-        console.error('Failed to initialize Supabase');
-        alert('Configuration error. Please check console.');
+    // Debug logging
+    function debug(msg) {
+      console.log('[REGISTER] ' + msg);
+    }
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+      debug('DOM loaded');
+      
+      // Check if scripts loaded
+      if (typeof CONFIG === 'undefined') {
+        debug('ERROR: CONFIG not loaded');
+        alert('Error: Config not loaded. Check config.js');
         return;
       }
-      console.log('Supabase initialized successfully');
+      debug('CONFIG loaded: ' + CONFIG.SUPABASE_URL);
+      
+      if (typeof app === 'undefined') {
+        debug('ERROR: app not loaded');
+        alert('Error: App not loaded. Check app.js');
+        return;
+      }
+      debug('app object found');
+      
+      // Initialize Supabase
+      var client = app.initSupabase();
+      if (!client) {
+        debug('ERROR: Failed to initialize Supabase');
+        alert('Failed to initialize Supabase. Check config.js');
+        return;
+      }
+      debug('Supabase initialized');
       
       // Check if already logged in
       try {
-        const user = await app.getCurrentUser();
-        if (user) {
-          localStorage.setItem('giftcard_user', JSON.stringify(user));
+        var currentUser = await app.getCurrentUser();
+        if (currentUser) {
+          debug('Already logged in, redirecting...');
+          localStorage.setItem('giftcard_user', JSON.stringify(currentUser));
           window.location.href = 'dashboard.html';
           return;
         }
-      } catch (err) {
-        console.log('No existing session');
+      } catch (e) {
+        debug('Not logged in: ' + e.message);
       }
       
-      // Register form
-      const form = document.getElementById('register-form');
-      const btn = document.getElementById('register-btn');
+      // Register button click
+      var registerBtn = document.getElementById('register-btn');
+      debug('Register button found: ' + (registerBtn ? 'YES' : 'NO'));
       
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log('Form submitted');
+      registerBtn.addEventListener('click', async function() {
+        debug('Create Account button clicked');
         
-        const fullName = document.getElementById('full-name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
+        var fullName = document.getElementById('full-name').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirm-password').value;
+        var btn = document.getElementById('register-btn');
         
-        console.log('Registration attempt:', { email, fullName });
+        debug('Form values: ' + JSON.stringify({fullName, email, password: '***'}));
         
         // Validation
         if (!fullName || !email || !password) {
-          app.showToast('Please fill in all fields', 'error');
+          alert('Please fill in all fields');
           return;
         }
         
         if (password !== confirmPassword) {
-          app.showToast('Passwords do not match', 'error');
+          alert('Passwords do not match');
           return;
         }
         
         if (password.length < 6) {
-          app.showToast('Password must be at least 6 characters', 'error');
+          alert('Password must be at least 6 characters');
           return;
         }
         
         // Show loading
         btn.disabled = true;
         btn.textContent = 'Creating Account...';
+        debug('Calling app.signUp...');
         
         try {
           // Create account
-          console.log('Calling signUp...');
-          const result = await app.signUp(email, password, fullName);
-          console.log('SignUp result:', result);
+          var result = await app.signUp(email, password, fullName);
+          debug('signUp result: ' + JSON.stringify(result));
           
           if (!result.success) {
-            app.showToast(result.error || 'Registration failed', 'error');
+            alert('Registration failed: ' + (result.error || 'Unknown error'));
             btn.disabled = false;
             btn.textContent = 'Create Account';
             return;
           }
           
-          app.showToast('Account created! Signing you in...', 'success');
+          // Success - auto login
+          debug('Registration successful, logging in...');
+          alert('Account created successfully!');
           
-          // Auto sign in
-          setTimeout(async () => {
-            try {
-              const loginResult = await app.signIn(email, password);
-              console.log('Login result:', loginResult);
-              
-              if (loginResult.success) {
-                const user = await app.getCurrentUser();
-                if (user) {
-                  localStorage.setItem('giftcard_user', JSON.stringify(user));
-                  window.location.href = 'dashboard.html';
-                }
-              } else {
-                window.location.href = 'login.html?registered=true';
-              }
-            } catch (err) {
-              console.error('Auto-login error:', err);
-              window.location.href = 'login.html';
-            }
-          }, 1500);
+          var loginResult = await app.signIn(email, password);
+          debug('signIn result: ' + JSON.stringify(loginResult));
+          
+          if (loginResult.success) {
+            var user = await app.getCurrentUser();
+            localStorage.setItem('giftcard_user', JSON.stringify(user));
+            debug('Redirecting to dashboard...');
+            window.location.href = 'dashboard.html';
+          } else {
+            debug('Login failed, redirecting to login page');
+            window.location.href = 'login.html';
+          }
         } catch (err) {
-          console.error('Registration error:', err);
-          app.showToast('Registration failed: ' + err.message, 'error');
+          debug('ERROR: ' + err.message);
+          alert('Error: ' + err.message);
           btn.disabled = false;
           btn.textContent = 'Create Account';
         }
       });
+      
+      debug('Registration ready - waiting for button click');
     });
   </script>
 </body>

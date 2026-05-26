@@ -12,7 +12,6 @@
 <body>
   <div class="ambient-glow"></div>
   
-  <!-- Nav -->
   <nav class="nav">
     <div class="container nav-content">
       <a href="index.html" class="nav-logo">
@@ -22,7 +21,6 @@
     </div>
   </nav>
 
-  <!-- Auth Page -->
   <div class="auth-page">
     <div class="container-narrow">
       <div class="auth-card">
@@ -43,7 +41,7 @@
             <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
           </div>
           
-          <button type="submit" class="btn btn-primary w-full" id="login-btn" style="margin-top: 8px;">
+          <button type="button" class="btn btn-primary w-full" id="login-btn" style="margin-top: 8px;">
             Sign In
           </button>
         </form>
@@ -55,73 +53,98 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize Supabase
-      const supabaseClient = app.initSupabase();
-      if (!supabaseClient) {
-        console.error('Failed to initialize Supabase');
-        alert('Configuration error. Please check console.');
+    // Debug logging
+    function debug(msg) {
+      console.log('[LOGIN] ' + msg);
+    }
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+      debug('DOM loaded');
+      
+      // Check if scripts loaded
+      if (typeof CONFIG === 'undefined') {
+        debug('ERROR: CONFIG not loaded');
+        alert('Error: Config not loaded. Check config.js');
         return;
       }
-      console.log('Supabase initialized successfully');
+      debug('CONFIG loaded: ' + CONFIG.SUPABASE_URL);
+      
+      if (typeof app === 'undefined') {
+        debug('ERROR: app not loaded');
+        alert('Error: App not loaded. Check app.js');
+        return;
+      }
+      debug('app object found');
+      
+      // Initialize Supabase
+      var client = app.initSupabase();
+      if (!client) {
+        debug('ERROR: Failed to initialize Supabase');
+        alert('Failed to initialize Supabase. Check config.js');
+        return;
+      }
+      debug('Supabase initialized');
       
       // Check if already logged in
       try {
-        const user = await app.getCurrentUser();
-        if (user) {
-          console.log('Already logged in:', user);
-          localStorage.setItem('giftcard_user', JSON.stringify(user));
-          if (user.role === 'admin') {
+        var currentUser = await app.getCurrentUser();
+        if (currentUser) {
+          debug('Already logged in, redirecting...');
+          localStorage.setItem('giftcard_user', JSON.stringify(currentUser));
+          if (currentUser.role === 'admin') {
             window.location.href = 'admin.html';
           } else {
             window.location.href = 'dashboard.html';
           }
           return;
         }
-      } catch (err) {
-        console.log('No existing session');
+      } catch (e) {
+        debug('Not logged in: ' + e.message);
       }
       
-      // Login form
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log('Login form submitted');
+      // Login button click
+      var loginBtn = document.getElementById('login-btn');
+      debug('Login button found: ' + (loginBtn ? 'YES' : 'NO'));
+      
+      loginBtn.addEventListener('click', async function() {
+        debug('Sign In button clicked');
         
-        const btn = document.getElementById('login-btn');
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        var btn = document.getElementById('login-btn');
         
-        console.log('Login attempt:', { email });
+        debug('Form values: ' + JSON.stringify({email, password: '***'}));
         
         if (!email || !password) {
-          app.showToast('Please fill in all fields', 'error');
+          alert('Please fill in all fields');
           return;
         }
         
         // Show loading
         btn.disabled = true;
         btn.textContent = 'Signing In...';
+        debug('Calling app.signIn...');
         
         try {
-          const result = await app.signIn(email, password);
-          console.log('SignIn result:', result);
+          var result = await app.signIn(email, password);
+          debug('signIn result: ' + JSON.stringify(result));
           
           if (!result.success) {
-            app.showToast(result.error || 'Login failed', 'error');
+            alert('Login failed: ' + (result.error || 'Invalid credentials'));
             btn.disabled = false;
             btn.textContent = 'Sign In';
             return;
           }
           
-          const user = await app.getCurrentUser();
-          console.log('Current user:', user);
+          var user = await app.getCurrentUser();
+          debug('User retrieved: ' + (user ? user.email : 'null'));
           
           if (user) {
             localStorage.setItem('giftcard_user', JSON.stringify(user));
+            debug('Redirecting to dashboard...');
             if (user.role === 'admin') {
               window.location.href = 'admin.html';
             } else {
@@ -129,21 +152,15 @@
             }
           }
         } catch (err) {
-          console.error('Login error:', err);
-          app.showToast('Login failed: ' + err.message, 'error');
+          debug('ERROR: ' + err.message);
+          alert('Error: ' + err.message);
           btn.disabled = false;
           btn.textContent = 'Sign In';
         }
       });
       
+      debug('Login ready - waiting for button click');
     });
-    
-    // Close modal on overlay click
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal-overlay')) {
-        event.target.classList.remove('active');
-      }
-    }
   </script>
 </body>
 </html>
