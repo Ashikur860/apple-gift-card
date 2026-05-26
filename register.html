@@ -8,6 +8,35 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Global error handler to catch syntax errors
+    window.onerror = function(message, source, lineno, colno, error) {
+      console.error('JAVASCRIPT ERROR: ' + message + ' at line ' + lineno);
+      alert('JavaScript Error: ' + message + '\nFile: ' + source + '\nLine: ' + lineno);
+      return false;
+    };
+    
+    // Check if scripts loaded after a short delay
+    setTimeout(function() {
+      console.log('=== SCRIPT CHECK ===');
+      if (typeof supabase === 'undefined') {
+        console.error('ERROR: Supabase library not loaded');
+      } else {
+        console.log('✓ Supabase library loaded');
+      }
+      if (typeof CONFIG === 'undefined') {
+        console.error('ERROR: CONFIG not loaded');
+      } else {
+        console.log('✓ CONFIG loaded');
+      }
+      if (typeof app === 'undefined') {
+        console.error('ERROR: app not loaded - check app.js for syntax errors above');
+        alert('Error: app.js failed to load. Check console (F12) for syntax errors.');
+      } else {
+        console.log('✓ app loaded successfully');
+      }
+    }, 1000);
+  </script>
 </head>
 <body>
   <div class="ambient-glow"></div>
@@ -72,20 +101,29 @@
       console.log('[REGISTER] ' + msg);
     }
     
-    document.addEventListener('DOMContentLoaded', async function() {
-      debug('DOM loaded');
+    // Wait for all scripts to load
+    async function init() {
+      debug('Initializing...');
+      
+      // Wait for scripts to load (retry up to 10 times)
+      let attempts = 0;
+      while ((typeof CONFIG === 'undefined' || typeof app === 'undefined') && attempts < 10) {
+        debug('Waiting for scripts to load... attempt ' + (attempts + 1));
+        await new Promise(r => setTimeout(r, 200));
+        attempts++;
+      }
       
       // Check if scripts loaded
       if (typeof CONFIG === 'undefined') {
-        debug('ERROR: CONFIG not loaded');
-        alert('Error: Config not loaded. Check config.js');
+        debug('ERROR: CONFIG not loaded after ' + attempts + ' attempts');
+        alert('Error: Config not loaded. Check config.js exists and has no errors.');
         return;
       }
       debug('CONFIG loaded: ' + CONFIG.SUPABASE_URL);
       
       if (typeof app === 'undefined') {
-        debug('ERROR: app not loaded');
-        alert('Error: App not loaded. Check app.js');
+        debug('ERROR: app not loaded after ' + attempts + ' attempts');
+        alert('Error: App not loaded. Check app.js for syntax errors in console (F12).');
         return;
       }
       debug('app object found');
@@ -185,7 +223,10 @@
       });
       
       debug('Registration ready - waiting for button click');
-    });
+    }
+    
+    // Start initialization
+    init();
   </script>
 </body>
 </html>

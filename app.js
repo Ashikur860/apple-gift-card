@@ -3,8 +3,8 @@
 // Supabase Integration & Utilities
 // ============================================
 
-// Initialize Supabase Client
-let supabase;
+// Supabase client instance
+var supabaseClient = null;
 
 function initSupabase() {
   if (typeof CONFIG === 'undefined') {
@@ -12,12 +12,17 @@ function initSupabase() {
     return null;
   }
   
-  supabase = window.supabase.createClient(
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase library not loaded');
+    return null;
+  }
+  
+  supabaseClient = window.supabase.createClient(
     CONFIG.SUPABASE_URL,
     CONFIG.SUPABASE_ANON_KEY
   );
   
-  return supabase;
+  return supabaseClient;
 }
 
 // ============================================
@@ -26,7 +31,7 @@ function initSupabase() {
 
 async function signUp(email, password, fullName) {
   try {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: {
@@ -43,7 +48,7 @@ async function signUp(email, password, fullName) {
 
 async function signIn(email, password) {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
@@ -57,7 +62,7 @@ async function signIn(email, password) {
 
 async function signOut() {
   try {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
     return { success: true };
   } catch (error) {
@@ -67,11 +72,11 @@ async function signOut() {
 
 async function getCurrentUser() {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) return null;
     
     // Get user profile from public.users
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await supabaseClient
       .from('users')
       .select('*')
       .eq('id', user.id)
@@ -113,7 +118,7 @@ function isAdmin(email, password) {
 
 async function getGiftCards() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('giftcards')
       .select('*')
       .eq('is_active', true)
@@ -128,7 +133,7 @@ async function getGiftCards() {
 
 async function getGiftCardById(id) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('giftcards')
       .select('*')
       .eq('id', id)
@@ -144,7 +149,7 @@ async function getGiftCardById(id) {
 // Admin functions
 async function addGiftCard(giftCard) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('giftcards')
       .insert([giftCard])
       .select()
@@ -159,7 +164,7 @@ async function addGiftCard(giftCard) {
 
 async function updateGiftCard(id, updates) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('giftcards')
       .update(updates)
       .eq('id', id)
@@ -175,7 +180,7 @@ async function updateGiftCard(id, updates) {
 
 async function deleteGiftCard(id) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('giftcards')
       .delete()
       .eq('id', id);
@@ -193,7 +198,7 @@ async function deleteGiftCard(id) {
 
 async function createClaim(claimData) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('claims')
       .insert([claimData])
       .select()
@@ -208,7 +213,7 @@ async function createClaim(claimData) {
 
 async function getUserClaims(userId) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('claims')
       .select(`
         *,
@@ -226,7 +231,7 @@ async function getUserClaims(userId) {
 
 async function getAllClaims() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('claims')
       .select(`
         *,
@@ -250,7 +255,7 @@ async function updateClaimStatus(claimId, status, adminNotes = null) {
       updates.processed_at = new Date().toISOString();
     }
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('claims')
       .update(updates)
       .eq('id', claimId)
@@ -276,7 +281,7 @@ function generateCouponCode(brand) {
 
 async function createCoupon(couponData) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('coupons')
       .insert([couponData])
       .select()
@@ -291,7 +296,7 @@ async function createCoupon(couponData) {
 
 async function getUserCoupons(userId) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('coupons')
       .select(`
         *,
@@ -313,7 +318,7 @@ async function getUserCoupons(userId) {
 
 async function getAllUsers() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('users')
       .select('*')
       .order('created_at', { ascending: false });
@@ -327,7 +332,7 @@ async function getAllUsers() {
 
 async function updateUserRole(userId, role) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('users')
       .update({ role })
       .eq('id', userId)
@@ -401,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function getRewardById(id) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('rewards')
       .select('*')
       .eq('id', id)
@@ -416,7 +421,7 @@ async function getRewardById(id) {
 
 // Make functions available globally
 window.app = {
-  supabase,
+  supabase: supabaseClient,
   initSupabase,
   signUp,
   signIn,
@@ -479,7 +484,7 @@ function showToast(message, type = 'info') {
 // ============================================
 async function getRewards() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('rewards')
       .select('*')
       .order('created_at', { ascending: false });
@@ -493,7 +498,7 @@ async function getRewards() {
 
 async function addReward(reward) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('rewards')
       .insert([reward])
       .select()
@@ -508,7 +513,7 @@ async function addReward(reward) {
 
 async function updateReward(id, updates) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('rewards')
       .update(updates)
       .eq('id', id)
@@ -524,7 +529,7 @@ async function updateReward(id, updates) {
 
 async function deleteReward(id) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('rewards')
       .delete()
       .eq('id', id);
