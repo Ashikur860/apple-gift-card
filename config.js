@@ -8,8 +8,8 @@ const CONFIG = {
   SUPABASE_ANON_KEY: 'your-anon-key-here',
   
   // Admin credentials
-  ADMIN_EMAIL: 'admin@applerewards.com',
-  ADMIN_PASSWORD: 'admin123'
+  ADMIN_EMAIL: 'bijoy@gmail.com',
+  ADMIN_PASSWORD: '1234'
 };
 
 // Make CONFIG available globally
