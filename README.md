@@ -1,6 +1,6 @@
-# 🎁 GiftCard Rewards Platform
+# � Apple Rewards — Premium Digital Rewards Platform
 
-> A modern, dark-themed gift card reward web application with Supabase backend.
+> An Apple-inspired luxury digital rewards platform with premium UI design.
 
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-green)
 ![Tech Stack](https://img.shields.io/badge/HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Supabase-blue)
@@ -10,18 +10,19 @@
 ## ✨ Features
 
 ### For Users
-- 🎁 Browse available gift cards (Amazon, PayPal, Steam, Binance, Google Play, Apple)
-- 📝 Submit gift card claims with card information
-- ⏱️ Real-time processing simulation (15-20 seconds)
-- 🎫 Automatic coupon code generation
-- 📊 User dashboard with claim history
+- � Browse premium digital rewards (Apple Credit, Store Credit, Digital Vouchers, Entertainment Pass, Shopping Rewards)
+- 📝 Submit reward claims with secure form (Name, Email, Country only)
+- ⚡ Real-time processing with animated progress bar (10-15 seconds)
+- 🎫 Automatic reward code generation (APL-XXXXXX format)
+- 📊 Premium user dashboard with claim history and codes
 - 🔐 Secure authentication with Supabase Auth
+- 🔔 Toast notifications for all actions
 
 ### For Admins
-- 📊 Dashboard overview with statistics
-- 👥 User management (view all users, toggle admin roles)
-- 📝 Claims management (view all claims, update statuses)
-- 🎁 Gift card management (add, edit, delete gift cards)
+- 📊 Dashboard overview with live statistics
+- 👥 User management with role controls
+- 📝 Claims management with status updates
+- 🎁 Reward management (add, edit, delete rewards with custom colors)
 - 🔔 Real-time activity tracking
 
 ---
@@ -31,7 +32,7 @@
 | Technology | Purpose |
 |---|---|
 | **HTML5** | Page structure |
-| **CSS3** | Styling with glassmorphism effects |
+| **CSS3** | Premium styling with Apple-inspired design |
 | **Vanilla JavaScript** | Client-side logic |
 | **Supabase** | Authentication & PostgreSQL database |
 | **Row Level Security** | Secure data access |
@@ -42,17 +43,17 @@
 
 ```
 gift-card-project/
-├── index.html          # Landing page
-├── login.html          # User login
-├── register.html       # User registration
-├── dashboard.html     # User dashboard
-├── admin.html         # Admin panel
-├── styles.css         # Main stylesheet
-├── app.js             # Core JavaScript utilities
-├── config.js          # Supabase configuration
-├── index.js           # Landing page functionality
-├── supabase-schema.sql # Database schema
-└── README.md          # This file
+├── index.html          # Apple-inspired landing page
+├── login.html          # Clean auth page
+├── register.html       # Registration form
+├── dashboard.html      # Premium user dashboard
+├── admin.html          # Admin panel with sidebar
+├── style.css           # Apple-inspired stylesheet
+├── app.js              # Core JavaScript with Supabase
+├── config.js           # Supabase configuration
+├── index.js            # Landing page functionality
+├── schema.sql          # Database schema for rewards
+└── README.md           # This file
 ```
 
 ---
@@ -93,16 +94,16 @@ const CONFIG = {
 
 1. In Supabase Dashboard, go to **SQL Editor**
 2. Create a **New Query**
-3. Copy the entire contents of `supabase-schema.sql`
+3. Copy the entire contents of `schema.sql`
 4. Click **Run**
 
 This creates:
 - `users` table (extends Supabase auth)
-- `giftcards` table (gift card catalog)
+- `rewards` table (rewards catalog)
 - `claims` table (user submitted claims)
-- `coupons` table (generated coupon codes)
+- `coupons` table (generated reward codes)
 - RLS policies for security
-- Sample gift cards (Amazon, PayPal, Steam, etc.)
+- Sample rewards (Apple, Store Credit, Entertainment, etc.)
 
 ### 5. Configure Auth Settings
 
@@ -151,7 +152,7 @@ Then open: **http://localhost:3000**
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/yourusername/gift-card-rewards.git
+git remote add origin https://github.com/yourusername/apple-rewards.git
 git push -u origin main
 ```
 
@@ -160,7 +161,7 @@ git push -u origin main
 
 ### After Deployment
 
-1. Copy your Vercel domain (e.g., `https://gift-card-rewards.vercel.app`)
+1. Copy your Vercel domain (e.g., `https://apple-rewards.vercel.app`)
 2. Add it to Supabase **Redirect URLs**:
    - Go to Supabase → Authentication → URL Configuration
    - Add: `https://your-domain.vercel.app/**`
@@ -172,7 +173,7 @@ git push -u origin main
 ### Admin Account
 | Field | Value |
 |---|---|
-| Email | `admin@giftcard.com` (or your custom) |
+| Email | `admin@applerewards.com` (or your custom) |
 | Password | `admin123` (or your custom) |
 | Access | Click **"Sign in as Admin"** on login page |
 
@@ -192,23 +193,22 @@ Create a regular account via **Register** page.
 - `role` - 'user' or 'admin'
 - `created_at` - Timestamp
 
-#### `giftcards`
+#### `rewards`
 - `id` - UUID
-- `name` - Gift card name
-- `brand` - Brand identifier
+- `name` - Reward name
+- `icon` - Emoji icon
 - `amount` - Reward amount
-- `logo_url` - Logo image URL
+- `description` - Reward description
 - `color_start/color_end` - Card gradient colors
 - `is_active` - Boolean
 
 #### `claims`
 - `id` - UUID
 - `user_id` - Reference to users
-- `giftcard_id` - Reference to giftcards
-- `card_holder_name` - Submitted card name
-- `card_number` - Submitted card number
-- `expiry_date` - Card expiry
-- `cvv` - Card CVV
+- `reward_id` - Reference to rewards
+- `full_name` - User full name
+- `email` - User email
+- `country` - User country
 - `status` - pending/processing/completed/rejected
 - `submitted_at` - Timestamp
 - `admin_notes` - Admin comments
@@ -217,7 +217,7 @@ Create a regular account via **Register** page.
 - `id` - UUID
 - `claim_id` - Reference to claims
 - `user_id` - Reference to users
-- `code` - Generated coupon code
+- `code` - Generated reward code
 - `amount` - Coupon value
 - `generated_at` - Timestamp
 
@@ -225,23 +225,23 @@ Create a regular account via **Register** page.
 
 ## 🎨 Customization
 
-### Change Gift Cards
+### Change Rewards
 
-Edit the INSERT statement in `supabase-schema.sql`:
+Edit the INSERT statement in `schema.sql`:
 
 ```sql
-INSERT INTO public.giftcards (name, brand, amount, description, color_start, color_end, logo_url) VALUES
-  ('Your Card Name', 'Brand', 50.00, 'Description', '#FF0000', '#00FF00', 'https://logo-url.png')
+INSERT INTO public.rewards (name, icon, amount, description, color_start, color_end) VALUES
+  ('Your Reward', '🎁', 100.00, 'Description', '#0071e3', '#42a5f5')
 ```
 
 ### Change Colors
 
-Edit CSS variables in `styles.css`:
+Edit CSS variables in `style.css`:
 
 ```css
 :root {
-  --primary-gradient: linear-gradient(135deg, #your-color 0%, #your-color 100%);
-  --bg-dark: #your-bg-color;
+  --apple-blue: #your-color;
+  --gradient-blue: linear-gradient(135deg, #your-color 0%, #your-color2 100%);
 }
 ```
 
@@ -283,7 +283,7 @@ Works perfectly on:
 - Check Supabase URL and Anon Key in `config.js`
 - Verify user exists in Supabase Authentication → Users
 
-### "Failed to load gift cards"
+### "Failed to load rewards"
 - Run SQL schema in Supabase SQL Editor
 - Check RLS policies are created
 
@@ -312,4 +312,4 @@ For issues or questions:
 
 ---
 
-**Built with ❤️ using HTML, CSS, JavaScript, and Supabase**
+**Built with ❤️ — Apple-inspired luxury design**

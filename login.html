@@ -3,44 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — GiftCard Rewards</title>
-  <meta name="description" content="Sign in to your GiftCard Rewards account">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Sign In — Apple Rewards</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </head>
 <body>
-  <div class="bg-animated"></div>
+  <div class="ambient-glow"></div>
   
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container navbar-content">
-      <a href="index.html" class="logo">GiftCard Rewards</a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link">Back to Home</a>
-      </div>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-content">
+      <a href="index.html" class="nav-logo">
+        <img src="apple logggoo.png" alt="Apple" style="height: 28px; width: auto; margin-right: 8px;">
+        Rewards
+      </a>
     </div>
   </nav>
 
   <!-- Auth Page -->
   <div class="auth-page">
     <div class="container-narrow">
-      <div class="glass-card auth-card">
+      <div class="auth-card">
         <div class="auth-header">
-          <h1 class="auth-title">Welcome Back</h1>
-          <p class="auth-subtitle">Sign in to access your rewards</p>
+          <div class="auth-logo"><img src="apple logggoo.png" alt="Apple" style="height: 48px; width: auto;"></div>
+          <h1 class="auth-title">Sign In</h1>
+          <p class="auth-subtitle">Access your rewards dashboard</p>
         </div>
-        
-        <div class="alert" id="login-alert"></div>
         
         <form id="login-form">
           <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="email" placeholder="name@example.com" required>
           </div>
           
           <div class="form-group">
@@ -48,46 +43,32 @@
             <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
           </div>
           
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text-secondary);">
-              <input type="checkbox" id="remember-me" style="width: 16px; height: 16px;">
-              Remember me
-            </label>
-            <a href="#" style="font-size: 14px; color: #667eea; text-decoration: none;">Forgot password?</a>
-          </div>
-          
-          <button type="submit" class="btn btn-primary w-full" id="login-btn">
+          <button type="submit" class="btn btn-primary w-full" id="login-btn" style="margin-top: 8px;">
             Sign In
           </button>
         </form>
         
-        <div style="margin: 24px 0; display: flex; align-items: center; gap: 16px;">
-          <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-          <span style="color: var(--text-muted); font-size: 14px;">or</span>
-          <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+        <div class="auth-footer">
+          Don't have an account? <a href="register.html">Create one</a>
         </div>
         
-        <button class="btn btn-secondary w-full" id="admin-login-btn" style="margin-bottom: 16px;">
-          Sign in as Admin
-        </button>
-        
-        <p class="auth-link">
-          Don't have an account? <a href="register.html">Create account</a>
-        </p>
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-primary); text-align: center;">
+          <button class="btn btn-secondary w-full" id="admin-login-btn">
+            Sign in as Admin
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Admin Login Modal -->
+  <!-- Admin Modal -->
   <div class="modal-overlay" id="admin-modal">
-    <div class="modal glass-card" style="position: relative;">
-      <button class="modal-close" onclick="document.getElementById('admin-modal').classList.remove('active')">✕</button>
+    <div class="modal">
+      <button class="modal-close" onclick="closeAdminModal()">×</button>
       <div class="modal-header">
-        <h3 class="modal-title">Admin Login</h3>
+        <h3 class="modal-title">Admin Access</h3>
         <p class="modal-subtitle">Enter admin credentials</p>
       </div>
-      
-      <div class="alert" id="admin-alert"></div>
       
       <form id="admin-form">
         <div class="form-group">
@@ -100,23 +81,25 @@
           <input type="password" class="form-input" id="admin-password" required>
         </div>
         
-        <button type="submit" class="btn btn-primary w-full">
+        <button type="submit" class="btn btn-primary w-full" style="margin-top: 8px;">
           Access Admin Panel
         </button>
       </form>
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize Supabase
       app.initSupabase();
       
       // Check if already logged in
       const user = await app.getCurrentUser();
       if (user) {
         localStorage.setItem('giftcard_user', JSON.stringify(user));
-        if (user.role === 'admin' || localStorage.getItem('is_admin') === 'true') {
+        if (user.role === 'admin') {
           window.location.href = 'admin.html';
         } else {
           window.location.href = 'dashboard.html';
@@ -124,15 +107,13 @@
         return;
       }
       
-      // Setup login form
-      const loginForm = document.getElementById('login-form');
-      const loginBtn = document.getElementById('login-btn');
-      
-      loginForm.addEventListener('submit', async (e) => {
+      // Login form
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        loginBtn.dataset.originalText = loginBtn.textContent;
-        app.setLoading(loginBtn, true);
+        const btn = document.getElementById('login-btn');
+        btn.dataset.originalText = btn.textContent;
+        app.setLoading(btn, true);
         
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -140,24 +121,18 @@
         const result = await app.signIn(email, password);
         
         if (!result.success) {
-          app.showAlert('login-alert', result.error, 'error');
-          app.setLoading(loginBtn, false);
+          app.showToast(result.error, 'error');
+          app.setLoading(btn, false);
           return;
         }
         
-        // Get user profile
         const user = await app.getCurrentUser();
         if (user) {
           localStorage.setItem('giftcard_user', JSON.stringify(user));
-          
-          // Redirect based on role
           if (user.role === 'admin') {
             window.location.href = 'admin.html';
           } else {
-            // Check for redirect parameter
-            const params = new URLSearchParams(window.location.search);
-            const redirect = params.get('redirect') || 'dashboard.html';
-            window.location.href = redirect;
+            window.location.href = 'dashboard.html';
           }
         }
       });
@@ -168,7 +143,7 @@
       });
       
       // Admin form
-      document.getElementById('admin-form').addEventListener('submit', async (e) => {
+      document.getElementById('admin-form').addEventListener('submit', (e) => {
         e.preventDefault();
         
         const email = document.getElementById('admin-email').value;
@@ -176,13 +151,18 @@
         
         if (app.isAdmin(email, password)) {
           localStorage.setItem('is_admin', 'true');
-          localStorage.setItem('admin_email', email);
           window.location.href = 'admin.html';
         } else {
-          app.showAlert('admin-alert', 'Invalid admin credentials', 'error');
+          app.showToast('Invalid admin credentials', 'error');
         }
       });
     });
+    
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.remove('active');
+    }
+    
+    window.closeAdminModal = closeAdminModal;
     
     // Close modal on overlay click
     window.onclick = function(event) {

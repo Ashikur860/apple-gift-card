@@ -3,211 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel — GiftCard Rewards</title>
-  <meta name="description" content="Admin panel for GiftCard Rewards platform">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Admin — Apple Rewards</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </head>
 <body>
-  <div class="bg-animated"></div>
+  <div class="ambient-glow"></div>
   
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container navbar-content">
-      <a href="index.html" class="logo">GiftCard Rewards</a>
-      <div class="nav-links">
-        <span style="color: var(--text-secondary); font-size: 14px;">Admin Panel</span>
-        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="logout()">
-          Sign Out
-        </button>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="apple logggoo.png" alt="Apple" style="height: 24px; width: auto; vertical-align: middle; margin-right: 8px;"> Admin
       </div>
-    </div>
-  </nav>
-
-  <!-- Admin Dashboard -->
-  <div class="dashboard-page">
-    <div class="container">
-      <div class="admin-grid">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar glass-card" style="height: fit-content;">
-          <div class="logo" style="font-size: 20px;">Admin Control</div>
-          <nav>
-            <ul class="admin-nav">
-              <li class="admin-nav-item">
-                <button class="admin-nav-link active" onclick="showTab('overview')">
-                  <span>📊</span> Overview
-                </button>
-              </li>
-              <li class="admin-nav-item">
-                <button class="admin-nav-link" onclick="showTab('claims')">
-                  <span>📝</span> Claims
-                </button>
-              </li>
-              <li class="admin-nav-item">
-                <button class="admin-nav-link" onclick="showTab('users')">
-                  <span>👥</span> Users
-                </button>
-              </li>
-              <li class="admin-nav-item">
-                <button class="admin-nav-link" onclick="showTab('giftcards')">
-                  <span>🎁</span> Gift Cards
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </aside>
+      <nav>
+        <ul class="admin-nav">
+          <li class="admin-nav-item">
+            <button class="admin-nav-link active" onclick="showTab('overview')">
+              <span>📊</span> Overview
+            </button>
+          </li>
+          <li class="admin-nav-item">
+            <button class="admin-nav-link" onclick="showTab('claims')">
+              <span>📝</span> Claims
+            </button>
+          </li>
+          <li class="admin-nav-item">
+            <button class="admin-nav-link" onclick="showTab('users')">
+              <span>👥</span> Users
+            </button>
+          </li>
+          <li class="admin-nav-item">
+            <button class="admin-nav-link" onclick="showTab('rewards')">
+              <span>🎁</span> Rewards
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div style="margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-primary);">
+        <button class="btn btn-secondary w-full" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Overview Tab -->
+      <div class="admin-tab active" id="tab-overview">
+        <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;">Overview</h1>
         
-        <!-- Main Content -->
-        <main class="admin-content">
-          <!-- Overview Tab -->
-          <div class="admin-tab active" id="tab-overview">
-            <h2 style="margin-bottom: 24px;">Dashboard Overview</h2>
-            
-            <div class="stats-grid" style="margin-bottom: 32px;">
-              <div class="glass-card stat-card">
-                <div class="stat-icon blue">👥</div>
-                <div>
-                  <div class="stat-value" id="stat-users">0</div>
-                  <div class="stat-label">Total Users</div>
-                </div>
-              </div>
-              
-              <div class="glass-card stat-card">
-                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2);">📝</div>
-                <div>
-                  <div class="stat-value" id="stat-claims">0</div>
-                  <div class="stat-label">Total Claims</div>
-                </div>
-              </div>
-              
-              <div class="glass-card stat-card">
-                <div class="stat-icon green">✓</div>
-                <div>
-                  <div class="stat-value" id="stat-completed">0</div>
-                  <div class="stat-label">Completed</div>
-                </div>
-              </div>
-              
-              <div class="glass-card stat-card">
-                <div class="stat-icon orange">⏳</div>
-                <div>
-                  <div class="stat-value" id="stat-pending">0</div>
-                  <div class="stat-label">Pending</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="glass-card" style="padding: 24px;">
-              <h3 style="margin-bottom: 16px;">Recent Activity</h3>
-              <div id="recent-activity">
-                <p style="color: var(--text-secondary);">Loading...</p>
-              </div>
-            </div>
+        <div class="stats-row" style="margin-bottom: 40px;">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-users" style="--stat-gradient: var(--gradient-blue);">0</div>
+            <div class="stat-label">Users</div>
           </div>
-          
-          <!-- Claims Tab -->
-          <div class="admin-tab" id="tab-claims">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-              <h2>All Claims</h2>
-              <button class="btn btn-primary" onclick="loadClaims()">🔄 Refresh</button>
-            </div>
-            
-            <div class="glass-card">
-              <div class="table-container">
-                <table class="data-table" id="admin-claims-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Gift Card</th>
-                      <th>Amount</th>
-                      <th>Card Info</th>
-                      <th>Submitted</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-claims-tbody">
-                    <tr>
-                      <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                        <div class="loader" style="width: 30px; height: 30px; margin: 0 auto 16px;"></div>
-                        Loading claims...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-claims" style="--stat-gradient: var(--gradient-purple);">0</div>
+            <div class="stat-label">Claims</div>
           </div>
-          
-          <!-- Users Tab -->
-          <div class="admin-tab" id="tab-users">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-              <h2>All Users</h2>
-              <button class="btn btn-primary" onclick="loadUsers()">🔄 Refresh</button>
-            </div>
-            
-            <div class="glass-card">
-              <div class="table-container">
-                <table class="data-table" id="admin-users-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Joined</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-users-tbody">
-                    <tr>
-                      <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                        <div class="loader" style="width: 30px; height: 30px; margin: 0 auto 16px;"></div>
-                        Loading users...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-completed" style="--stat-gradient: var(--gradient-green);">0</div>
+            <div class="stat-label">Completed</div>
           </div>
-          
-          <!-- Gift Cards Tab -->
-          <div class="admin-tab" id="tab-giftcards">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-              <h2>Gift Cards Management</h2>
-              <button class="btn btn-primary" onclick="openGiftCardModal()">+ Add Gift Card</button>
-            </div>
-            
-            <div class="giftcards-grid" id="admin-giftcards-container">
-              <div class="glass-card" style="padding: 40px; text-align: center; grid-column: 1 / -1;">
-                <div class="loader" style="width: 30px; height: 30px; margin: 0 auto 16px;"></div>
-                <p style="color: var(--text-secondary);">Loading gift cards...</p>
-              </div>
-            </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-pending" style="--stat-gradient: var(--gradient-orange);">0</div>
+            <div class="stat-label">Pending</div>
           </div>
-        </main>
-      </div>
-    </div>
-  </div>
-
-  <!-- Update Status Modal -->
-  <div class="modal-overlay" id="status-modal">
-    <div class="modal glass-card" style="position: relative; max-width: 400px;">
-      <button class="modal-close" onclick="closeStatusModal()">✕</button>
-      <div class="modal-header">
-        <h3 class="modal-title">Update Claim Status</h3>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: 24px;">
+          <h3 style="margin-bottom: 16px;">Recent Activity</h3>
+          <div id="recent-activity">
+            <p style="color: var(--text-secondary);">Loading...</p>
+          </div>
+        </div>
       </div>
       
-      <div class="alert" id="status-alert"></div>
+      <!-- Claims Tab -->
+      <div class="admin-tab" id="tab-claims">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h1 style="font-size: 32px; font-weight: 700;">All Claims</h1>
+          <button class="btn btn-secondary" onclick="loadClaims()">🔄 Refresh</button>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); overflow: hidden;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Reward</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="claims-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 40px;">Loading claims...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Users Tab -->
+      <div class="admin-tab" id="tab-users">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h1 style="font-size: 32px; font-weight: 700;">All Users</h1>
+          <button class="btn btn-secondary" onclick="loadUsers()">🔄 Refresh</button>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); overflow: hidden;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 40px;">Loading users...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Rewards Tab -->
+      <div class="admin-tab" id="tab-rewards">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h1 style="font-size: 32px; font-weight: 700;">Rewards Management</h1>
+          <button class="btn btn-primary" onclick="openRewardModal()">+ Add Reward</button>
+        </div>
+        
+        <div class="rewards-grid" id="admin-rewards-grid">
+          <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">Loading rewards...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Status Modal -->
+  <div class="modal-overlay" id="status-modal">
+    <div class="modal" style="max-width: 400px;">
+      <button class="modal-close" onclick="closeStatusModal()">×</button>
+      <div class="modal-header">
+        <h3 class="modal-title">Update Status</h3>
+      </div>
       
       <form id="status-form">
         <input type="hidden" id="status-claim-id">
-        
         <div class="form-group">
           <label class="form-label">Status</label>
           <select class="form-input" id="status-select" required>
@@ -217,151 +166,113 @@
             <option value="rejected">Rejected</option>
           </select>
         </div>
-        
         <div class="form-group">
-          <label class="form-label">Admin Notes</label>
-          <textarea class="form-input" id="admin-notes" rows="3" placeholder="Optional notes..."></textarea>
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" id="admin-notes" rows="3"></textarea>
         </div>
-        
-        <button type="submit" class="btn btn-primary w-full">
-          Update Status
-        </button>
+        <button type="submit" class="btn btn-primary w-full">Update</button>
       </form>
     </div>
   </div>
 
-  <!-- Gift Card Modal -->
-  <div class="modal-overlay" id="giftcard-modal">
-    <div class="modal glass-card" style="position: relative;">
-      <button class="modal-close" onclick="closeGiftCardModal()">✕</button>
+  <!-- Reward Modal -->
+  <div class="modal-overlay" id="reward-modal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeRewardModal()">×</button>
       <div class="modal-header">
-        <h3 class="modal-title" id="giftcard-modal-title">Add Gift Card</h3>
+        <h3 class="modal-title" id="reward-modal-title">Add Reward</h3>
       </div>
       
-      <div class="alert" id="giftcard-alert"></div>
-      
-      <form id="giftcard-form">
-        <input type="hidden" id="giftcard-edit-id">
-        
+      <form id="reward-form">
+        <input type="hidden" id="reward-edit-id">
         <div class="form-group">
           <label class="form-label">Name</label>
-          <input type="text" class="form-input" id="gc-name" placeholder="Amazon Gift Card" required>
+          <input type="text" class="form-input" id="r-name" required>
         </div>
-        
         <div class="form-group">
-          <label class="form-label">Brand</label>
-          <input type="text" class="form-input" id="gc-brand" placeholder="Amazon" required>
+          <label class="form-label">Icon (emoji)</label>
+          <input type="text" class="form-input" id="r-icon" placeholder="🎁" required>
         </div>
-        
         <div class="form-group">
-          <label class="form-label">Amount ($)</label>
-          <input type="number" class="form-input" id="gc-amount" placeholder="25.00" step="0.01" required>
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" id="r-amount" step="0.01" required>
         </div>
-        
         <div class="form-group">
           <label class="form-label">Description</label>
-          <textarea class="form-input" id="gc-description" rows="2" placeholder="Short description..."></textarea>
+          <input type="text" class="form-input" id="r-desc">
         </div>
-        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="form-group">
             <label class="form-label">Color Start</label>
-            <input type="color" class="form-input" id="gc-color-start" value="#667eea">
+            <input type="color" class="form-input" id="r-color-start" value="#0071e3">
           </div>
-          
           <div class="form-group">
             <label class="form-label">Color End</label>
-            <input type="color" class="form-input" id="gc-color-end" value="#764ba2">
+            <input type="color" class="form-input" id="r-color-end" value="#42a5f5">
           </div>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Logo URL</label>
-          <input type="url" class="form-input" id="gc-logo" placeholder="https://example.com/logo.png">
-        </div>
-        
-        <div style="margin-bottom: 16px;">
-          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-            <input type="checkbox" id="gc-active" checked style="width: 16px; height: 16px;">
+        <div style="margin: 16px 0;">
+          <label style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="r-active" checked style="width: 18px; height: 18px;">
             <span>Active</span>
           </label>
         </div>
-        
-        <button type="submit" class="btn btn-primary w-full" id="gc-submit-btn">
-          Save Gift Card
-        </button>
+        <button type="submit" class="btn btn-primary w-full">Save Reward</button>
       </form>
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
   <script>
-    let allClaims = [];
-    let allUsers = [];
-    let allGiftCards = [];
+    let allClaims = [], allUsers = [], allRewards = [];
     
     document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize Supabase
       app.initSupabase();
       
-      // Check admin auth
-      const isAdminAuth = localStorage.getItem('is_admin') === 'true';
+      const isAdmin = localStorage.getItem('is_admin') === 'true';
       const user = await app.getCurrentUser();
       
-      if (!isAdminAuth && (!user || user.role !== 'admin')) {
+      if (!isAdmin && (!user || user.role !== 'admin')) {
         window.location.href = 'login.html';
         return;
       }
       
-      // Load overview data
       await loadOverview();
     });
     
-    // Tab Navigation
-    function showTab(tabName) {
-      // Hide all tabs
-      document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-      // Show selected tab
-      document.getElementById(`tab-${tabName}`).classList.add('active');
+    function showTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-nav-link').forEach(l => l.classList.remove('active'));
       
-      // Update nav
-      document.querySelectorAll('.admin-nav-link').forEach(link => link.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
       event.target.classList.add('active');
       
-      // Load tab data
-      if (tabName === 'claims') loadClaims();
-      if (tabName === 'users') loadUsers();
-      if (tabName === 'giftcards') loadGiftCards();
+      if (tab === 'claims') loadClaims();
+      if (tab === 'users') loadUsers();
+      if (tab === 'rewards') loadRewards();
     }
     
     async function loadOverview() {
-      // Load stats
-      const [usersRes, claimsRes] = await Promise.all([
-        app.getAllUsers(),
-        app.getAllClaims()
-      ]);
+      const [users, claims] = await Promise.all([app.getAllUsers(), app.getAllClaims()]);
       
-      if (usersRes.success) {
-        allUsers = usersRes.data;
-        document.getElementById('stat-users').textContent = usersRes.data.length;
+      if (users.success) {
+        allUsers = users.data;
+        document.getElementById('stat-users').textContent = users.data.length;
       }
       
-      if (claimsRes.success) {
-        allClaims = claimsRes.data;
-        document.getElementById('stat-claims').textContent = claimsRes.data.length;
-        document.getElementById('stat-completed').textContent = claimsRes.data.filter(c => c.status === 'completed').length;
-        document.getElementById('stat-pending').textContent = claimsRes.data.filter(c => c.status === 'pending' || c.status === 'processing').length;
+      if (claims.success) {
+        allClaims = claims.data;
+        document.getElementById('stat-claims').textContent = claims.data.length;
+        document.getElementById('stat-completed').textContent = claims.data.filter(c => c.status === 'completed').length;
+        document.getElementById('stat-pending').textContent = claims.data.filter(c => c.status === 'pending' || c.status === 'processing').length;
         
-        // Recent activity
-        const recent = claimsRes.data.slice(0, 5);
-        document.getElementById('recent-activity').innerHTML = recent.length ? recent.map(claim => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
-            <div>
-              <strong>${claim.users?.full_name || 'Unknown'}</strong> claimed 
-              <strong>${claim.giftcards?.name || 'Unknown'}</strong>
-            </div>
-            <span class="status-badge ${getStatusClass(claim.status)}">
-              ${claim.status}
-            </span>
+        const recent = claims.data.slice(0, 5);
+        document.getElementById('recent-activity').innerHTML = recent.length ? recent.map(c => `
+          <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-primary);">
+            <span><strong>${c.users?.full_name || 'Unknown'}</strong> claimed ${c.rewards?.name || 'Reward'}</span>
+            <span class="status status-${c.status}">${c.status}</span>
           </div>
         `).join('') : '<p style="color: var(--text-secondary);">No recent activity</p>';
       }
@@ -369,40 +280,17 @@
     
     async function loadClaims() {
       const result = await app.getAllClaims();
-      
-      if (!result.success) {
-        document.getElementById('admin-claims-tbody').innerHTML = `
-          <tr><td colspan="7" style="text-align: center; padding: 40px;">Failed to load claims</td></tr>
-        `;
-        return;
-      }
+      if (!result.success) return;
       
       allClaims = result.data;
-      
-      document.getElementById('admin-claims-tbody').innerHTML = result.data.map(claim => `
+      document.getElementById('claims-tbody').innerHTML = result.data.map(c => `
         <tr>
+          <td><strong>${c.users?.full_name || 'Unknown'}</strong><br><small style="color: var(--text-secondary);">${c.users?.email || ''}</small></td>
+          <td>${c.rewards?.name || 'Unknown'}</td>
+          <td>${app.formatDate(c.submitted_at)}</td>
+          <td><span class="status status-${c.status}">${c.status}</span></td>
           <td>
-            <strong>${claim.users?.full_name || 'Unknown'}</strong>
-            <br><small style="color: var(--text-muted);">${claim.users?.email || ''}</small>
-          </td>
-          <td>${claim.giftcards?.name || 'Unknown'}</td>
-          <td>${app.formatCurrency(claim.giftcards?.amount || 0)}</td>
-          <td>
-            <small style="font-family: monospace; background: var(--bg-glass); padding: 4px 8px; border-radius: 4px;">
-              ****${claim.card_number.slice(-4)}
-            </small>
-          </td>
-          <td>${app.formatDate(claim.submitted_at)}</td>
-          <td>
-            <span class="status-badge ${getStatusClass(claim.status)}">
-              ${claim.status}
-            </span>
-          </td>
-          <td>
-            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" 
-                    onclick="openStatusModal('${claim.id}', '${claim.status}', '${claim.admin_notes || ''}')">
-              Update
-            </button>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" onclick="openStatusModal('${c.id}', '${c.status}', '${c.admin_notes || ''}')">Update</button>
           </td>
         </tr>
       `).join('');
@@ -410,76 +298,43 @@
     
     async function loadUsers() {
       const result = await app.getAllUsers();
-      
-      if (!result.success) {
-        document.getElementById('admin-users-tbody').innerHTML = `
-          <tr><td colspan="5" style="text-align: center; padding: 40px;">Failed to load users</td></tr>
-        `;
-        return;
-      }
+      if (!result.success) return;
       
       allUsers = result.data;
-      
-      document.getElementById('admin-users-tbody').innerHTML = result.data.map(user => `
+      document.getElementById('users-tbody').innerHTML = result.data.map(u => `
         <tr>
-          <td>${user.full_name}</td>
-          <td>${user.email}</td>
-          <td>
-            <span class="status-badge ${user.role === 'admin' ? 'status-completed' : 'status-pending'}">
-              ${user.role}
-            </span>
-          </td>
-          <td>${app.formatDate(user.created_at)}</td>
-          <td>
-            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" 
-                    onclick="toggleUserRole('${user.id}', '${user.role}')">
-              ${user.role === 'admin' ? 'Demote' : 'Make Admin'}
-            </button>
-          </td>
+          <td>${u.full_name}</td>
+          <td>${u.email}</td>
+          <td><span class="status status-${u.role === 'admin' ? 'completed' : 'pending'}">${u.role}</span></td>
+          <td>${app.formatDate(u.created_at)}</td>
         </tr>
       `).join('');
     }
     
-    async function loadGiftCards() {
-      const result = await app.getGiftCards();
+    async function loadRewards() {
+      const result = await app.getRewards();
+      if (!result.success) return;
       
-      if (!result.success) {
-        document.getElementById('admin-giftcards-container').innerHTML = `
-          <div class="glass-card" style="padding: 40px; text-align: center; grid-column: 1 / -1;">
-            Failed to load gift cards
-          </div>
-        `;
-        return;
-      }
-      
-      allGiftCards = result.data;
-      
-      document.getElementById('admin-giftcards-container').innerHTML = result.data.map(card => `
-        <div class="glass-card giftcard ${card.is_active ? '' : 'disabled'}" 
-             style="--card-color-start: ${card.color_start}; --card-color-end: ${card.color_end}; opacity: ${card.is_active ? 1 : 0.5};">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-            <img src="${card.logo_url || ''}" alt="${card.name}" class="giftcard-logo" 
-                 onerror="this.style.display='none'">
-            <span class="status-badge ${card.is_active ? 'status-completed' : 'status-rejected'}">
-              ${card.is_active ? 'Active' : 'Inactive'}
-            </span>
-          </div>
-          <h3 class="giftcard-name">${card.name}</h3>
-          <div class="giftcard-amount">${app.formatCurrency(card.amount)}</div>
-          <p class="giftcard-desc">${card.description || ''}</p>
-          <div style="display: flex; gap: 8px; margin-top: 16px;">
-            <button class="giftcard-btn" style="flex: 1;" onclick="editGiftCard('${card.id}')">Edit</button>
-            <button class="giftcard-btn" style="flex: 1; background: rgba(248, 113, 113, 0.2);" 
-                    onclick="deleteGiftCard('${card.id}')">Delete</button>
+      allRewards = result.data;
+      document.getElementById('admin-rewards-grid').innerHTML = result.data.map(r => `
+        <div class="reward-card" style="--card-gradient: linear-gradient(135deg, ${r.color_start}, ${r.color_end}); opacity: ${r.is_active ? 1 : 0.5};">
+          ${!r.is_active ? '<div class="reward-badge" style="background: rgba(255,59,48,0.3);">Inactive</div>' : '<div class="reward-badge">Active</div>'}
+          <div class="reward-card-content">
+            <div class="reward-icon">${r.icon}</div>
+            <h3 class="reward-name">${r.name}</h3>
+            <div class="reward-amount">$${r.amount}</div>
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+              <button class="btn btn-secondary" style="flex: 1; padding: 8px;" onclick="editReward('${r.id}')">Edit</button>
+              <button class="btn" style="flex: 1; padding: 8px; background: rgba(255,59,48,0.2);" onclick="deleteReward('${r.id}')">Delete</button>
+            </div>
           </div>
         </div>
       `).join('');
     }
     
-    // Status Modal
-    function openStatusModal(claimId, currentStatus, notes) {
-      document.getElementById('status-claim-id').value = claimId;
-      document.getElementById('status-select').value = currentStatus;
+    function openStatusModal(id, status, notes) {
+      document.getElementById('status-claim-id').value = id;
+      document.getElementById('status-select').value = status;
       document.getElementById('admin-notes').value = notes || '';
       document.getElementById('status-modal').classList.add('active');
     }
@@ -490,155 +345,99 @@
     
     document.getElementById('status-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const claimId = document.getElementById('status-claim-id').value;
+      const id = document.getElementById('status-claim-id').value;
       const status = document.getElementById('status-select').value;
       const notes = document.getElementById('admin-notes').value;
       
-      const result = await app.updateClaimStatus(claimId, status, notes);
-      
+      const result = await app.updateClaimStatus(id, status, notes);
       if (result.success) {
         closeStatusModal();
         loadClaims();
         loadOverview();
-        app.showAlert('status-alert', 'Status updated!', 'success');
-      } else {
-        app.showAlert('status-alert', result.error, 'error');
+        app.showToast('Status updated', 'success');
       }
     });
     
-    // Gift Card Modal
-    function openGiftCardModal() {
-      document.getElementById('giftcard-form').reset();
-      document.getElementById('giftcard-edit-id').value = '';
-      document.getElementById('giftcard-modal-title').textContent = 'Add Gift Card';
-      document.getElementById('giftcard-modal').classList.add('active');
+    function openRewardModal() {
+      document.getElementById('reward-form').reset();
+      document.getElementById('reward-edit-id').value = '';
+      document.getElementById('reward-modal-title').textContent = 'Add Reward';
+      document.getElementById('reward-modal').classList.add('active');
     }
     
-    function closeGiftCardModal() {
-      document.getElementById('giftcard-modal').classList.remove('active');
+    function closeRewardModal() {
+      document.getElementById('reward-modal').classList.remove('active');
     }
     
-    function editGiftCard(id) {
-      const card = allGiftCards.find(c => c.id === id);
-      if (!card) return;
+    function editReward(id) {
+      const r = allRewards.find(x => x.id === id);
+      if (!r) return;
       
-      document.getElementById('giftcard-edit-id').value = card.id;
-      document.getElementById('gc-name').value = card.name;
-      document.getElementById('gc-brand').value = card.brand;
-      document.getElementById('gc-amount').value = card.amount;
-      document.getElementById('gc-description').value = card.description || '';
-      document.getElementById('gc-color-start').value = card.color_start;
-      document.getElementById('gc-color-end').value = card.color_end;
-      document.getElementById('gc-logo').value = card.logo_url || '';
-      document.getElementById('gc-active').checked = card.is_active;
+      document.getElementById('reward-edit-id').value = r.id;
+      document.getElementById('r-name').value = r.name;
+      document.getElementById('r-icon').value = r.icon;
+      document.getElementById('r-amount').value = r.amount;
+      document.getElementById('r-desc').value = r.description || '';
+      document.getElementById('r-color-start').value = r.color_start;
+      document.getElementById('r-color-end').value = r.color_end;
+      document.getElementById('r-active').checked = r.is_active;
       
-      document.getElementById('giftcard-modal-title').textContent = 'Edit Gift Card';
-      document.getElementById('giftcard-modal').classList.add('active');
+      document.getElementById('reward-modal-title').textContent = 'Edit Reward';
+      document.getElementById('reward-modal').classList.add('active');
     }
     
-    async function deleteGiftCard(id) {
-      if (!confirm('Are you sure you want to delete this gift card?')) return;
-      
-      const result = await app.deleteGiftCard(id);
-      
+    async function deleteReward(id) {
+      if (!confirm('Delete this reward?')) return;
+      const result = await app.deleteReward(id);
       if (result.success) {
-        loadGiftCards();
-      } else {
-        alert(result.error);
+        loadRewards();
+        app.showToast('Reward deleted', 'success');
       }
     }
     
-    document.getElementById('giftcard-form').addEventListener('submit', async (e) => {
+    document.getElementById('reward-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const btn = document.getElementById('gc-submit-btn');
-      btn.dataset.originalText = btn.textContent;
-      app.setLoading(btn, true);
-      
-      const giftCardData = {
-        name: document.getElementById('gc-name').value,
-        brand: document.getElementById('gc-brand').value,
-        amount: parseFloat(document.getElementById('gc-amount').value),
-        description: document.getElementById('gc-description').value,
-        color_start: document.getElementById('gc-color-start').value,
-        color_end: document.getElementById('gc-color-end').value,
-        logo_url: document.getElementById('gc-logo').value,
-        is_active: document.getElementById('gc-active').checked
+      const data = {
+        name: document.getElementById('r-name').value,
+        icon: document.getElementById('r-icon').value,
+        amount: parseFloat(document.getElementById('r-amount').value),
+        description: document.getElementById('r-desc').value,
+        color_start: document.getElementById('r-color-start').value,
+        color_end: document.getElementById('r-color-end').value,
+        is_active: document.getElementById('r-active').checked
       };
       
-      const editId = document.getElementById('giftcard-edit-id').value;
-      let result;
-      
-      if (editId) {
-        result = await app.updateGiftCard(editId, giftCardData);
-      } else {
-        result = await app.addGiftCard(giftCardData);
-      }
-      
-      app.setLoading(btn, false);
+      const id = document.getElementById('reward-edit-id').value;
+      const result = id ? await app.updateReward(id, data) : await app.addReward(data);
       
       if (result.success) {
-        closeGiftCardModal();
-        loadGiftCards();
-      } else {
-        app.showAlert('giftcard-alert', result.error, 'error');
+        closeRewardModal();
+        loadRewards();
+        app.showToast(id ? 'Reward updated' : 'Reward added', 'success');
       }
     });
-    
-    // User Role Toggle
-    async function toggleUserRole(userId, currentRole) {
-      const newRole = currentRole === 'admin' ? 'user' : 'admin';
-      
-      if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) return;
-      
-      const result = await app.updateUserRole(userId, newRole);
-      
-      if (result.success) {
-        loadUsers();
-      } else {
-        alert(result.error);
-      }
-    }
-    
-    // Helpers
-    function getStatusClass(status) {
-      return {
-        'pending': 'status-pending',
-        'processing': 'status-processing',
-        'completed': 'status-completed',
-        'rejected': 'status-rejected'
-      }[status] || 'status-pending';
-    }
     
     async function logout() {
       await app.signOut();
       localStorage.removeItem('is_admin');
-      localStorage.removeItem('admin_email');
       localStorage.removeItem('giftcard_user');
       window.location.href = 'index.html';
     }
     
-    // Close modals on overlay click
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal-overlay')) {
-        event.target.classList.remove('active');
-      }
-    }
-    
-    // Make functions global
     window.showTab = showTab;
     window.loadClaims = loadClaims;
     window.loadUsers = loadUsers;
-    window.loadGiftCards = loadGiftCards;
+    window.loadRewards = loadRewards;
     window.openStatusModal = openStatusModal;
     window.closeStatusModal = closeStatusModal;
-    window.openGiftCardModal = openGiftCardModal;
-    window.closeGiftCardModal = closeGiftCardModal;
-    window.editGiftCard = editGiftCard;
-    window.deleteGiftCard = deleteGiftCard;
-    window.toggleUserRole = toggleUserRole;
+    window.openRewardModal = openRewardModal;
+    window.closeRewardModal = closeRewardModal;
+    window.editReward = editReward;
+    window.deleteReward = deleteReward;
     window.logout = logout;
+    
+    window.onclick = e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); };
   </script>
 </body>
 </html>

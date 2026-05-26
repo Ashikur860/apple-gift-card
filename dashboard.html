@@ -3,140 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — GiftCard Rewards</title>
-  <meta name="description" content="Your GiftCard Rewards dashboard - view claims and coupons">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Dashboard — Apple Rewards</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </head>
 <body>
-  <div class="bg-animated"></div>
+  <div class="ambient-glow"></div>
   
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container navbar-content">
-      <a href="index.html" class="logo">GiftCard Rewards</a>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-content">
+      <a href="index.html" class="nav-logo">
+        <img src="apple logggoo.png" alt="Apple" style="height: 28px; width: auto; margin-right: 8px;">
+        Rewards
+      </a>
       <div class="nav-links">
-        <a href="index.html#giftcards" class="nav-link">Gift Cards</a>
+        <a href="index.html#rewards" class="nav-link">Rewards</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <div class="user-menu">
-          <div class="user-avatar" id="user-avatar">U</div>
-          <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="logout()">
-            Sign Out
-          </button>
-        </div>
+        <button class="btn btn-secondary" style="padding: 8px 20px; font-size: 14px;" onclick="logout()">Sign Out</button>
       </div>
     </div>
   </nav>
 
   <!-- Dashboard -->
-  <div class="dashboard-page">
+  <div class="dashboard">
     <div class="container">
-      <!-- Dashboard Header -->
+      <!-- Header -->
       <div class="dashboard-header">
-        <div>
-          <h1 class="dashboard-title">Welcome back, <span id="user-name">User</span>!</h1>
-          <p class="dashboard-subtitle">Track your rewards and manage your claims</p>
+        <div class="welcome-section">
+          <h1 class="welcome-title">Welcome back, <span id="user-name">User</span></h1>
+          <p class="welcome-email" id="user-email">user@example.com</p>
         </div>
-        <a href="index.html#giftcards" class="btn btn-primary">Claim New Gift Card</a>
+        <a href="index.html#rewards" class="btn btn-primary">Claim New Reward</a>
       </div>
       
       <!-- Stats -->
-      <div class="stats-grid">
-        <div class="glass-card stat-card">
-          <div class="stat-icon blue">🎁</div>
-          <div>
-            <div class="stat-value" id="total-claims">0</div>
-            <div class="stat-label">Total Claims</div>
-          </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value" id="total-claims" style="--stat-gradient: var(--gradient-blue);">0</div>
+          <div class="stat-label">Total Claims</div>
         </div>
-        
-        <div class="glass-card stat-card">
-          <div class="stat-icon green">✓</div>
-          <div>
-            <div class="stat-value" id="completed-claims">0</div>
-            <div class="stat-label">Completed</div>
-          </div>
+        <div class="stat-item">
+          <div class="stat-value" id="completed-claims" style="--stat-gradient: var(--gradient-green);">0</div>
+          <div class="stat-label">Completed</div>
         </div>
-        
-        <div class="glass-card stat-card">
-          <div class="stat-icon orange">⏳</div>
-          <div>
-            <div class="stat-value" id="pending-claims">0</div>
-            <div class="stat-label">Processing</div>
-          </div>
+        <div class="stat-item">
+          <div class="stat-value" id="pending-claims" style="--stat-gradient: var(--gradient-orange);">0</div>
+          <div class="stat-label">Processing</div>
         </div>
       </div>
       
       <!-- Claims Section -->
-      <div class="dashboard-section">
-        <div class="section-header">
-          <h2>My Claims</h2>
+      <div class="mb-8">
+        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">My Claims</h2>
+        <div id="claims-list">
+          <div style="text-align: center; padding: 60px 20px;">
+            <div class="skeleton" style="width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 16px;"></div>
+            <p style="color: var(--text-secondary);">Loading your claims...</p>
+          </div>
         </div>
-        
-        <div class="glass-card">
-          <div class="table-container">
-            <table class="data-table" id="claims-table">
-              <thead>
-                <tr>
-                  <th>Gift Card</th>
-                  <th>Amount</th>
-                  <th>Submitted</th>
-                  <th>Status</th>
-                  <th>Coupon</th>
-                </tr>
-              </thead>
-              <tbody id="claims-tbody">
-                <tr>
-                  <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                    <div class="loader" style="width: 30px; height: 30px; margin: 0 auto 16px;"></div>
-                    Loading your claims...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div id="no-claims" style="display: none; text-align: center; padding: 60px 20px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">🎁</div>
-            <h3 style="margin-bottom: 8px;">No claims yet</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 24px;">Start claiming your first gift card reward!</p>
-            <a href="index.html#giftcards" class="btn btn-primary">Browse Gift Cards</a>
-          </div>
+        <div id="no-claims" style="display: none; text-align: center; padding: 60px 20px; background: var(--bg-tertiary); border-radius: var(--radius-lg);">
+          <div style="font-size: 48px; margin-bottom: 16px;">🎁</div>
+          <h3 style="margin-bottom: 8px;">No claims yet</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 24px;">Start claiming your first reward!</p>
+          <a href="index.html#rewards" class="btn btn-primary">Browse Rewards</a>
         </div>
       </div>
       
       <!-- Coupons Section -->
-      <div class="dashboard-section">
-        <div class="section-header">
-          <h2>My Coupons</h2>
-        </div>
-        
-        <div class="giftcards-grid" id="coupons-container">
-          <div class="glass-card" style="padding: 40px; text-align: center; grid-column: 1 / -1;">
-            <div class="loader" style="width: 30px; height: 30px; margin: 0 auto 16px;"></div>
-            <p style="color: var(--text-secondary);">Loading your coupons...</p>
+      <div>
+        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">My Reward Codes</h2>
+        <div id="coupons-grid" class="rewards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="reward-card" style="--card-gradient: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+              <div class="skeleton" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+            </div>
           </div>
         </div>
-        
-        <div id="no-coupons" style="display: none; text-align: center; padding: 40px 20px;">
+        <div id="no-coupons" style="display: none; text-align: center; padding: 60px 20px;">
           <div style="font-size: 48px; margin-bottom: 16px;">🎫</div>
-          <h3 style="margin-bottom: 8px;">No coupons yet</h3>
-          <p style="color: var(--text-secondary);">Complete a claim to receive your coupon code</p>
+          <h3 style="margin-bottom: 8px;">No reward codes yet</h3>
+          <p style="color: var(--text-secondary);">Complete a claim to receive your reward code</p>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
   <script>
     let currentUser = null;
     
     document.addEventListener('DOMContentLoaded', async () => {
-      // Initialize Supabase
       app.initSupabase();
       
       // Check auth
@@ -145,37 +106,25 @@
       
       currentUser = user;
       
-      // Update UI with user info
+      // Update UI
       document.getElementById('user-name').textContent = user.full_name || user.email.split('@')[0];
-      document.getElementById('user-avatar').textContent = (user.full_name || user.email)[0].toUpperCase();
+      document.getElementById('user-email').textContent = user.email;
       
-      // Load dashboard data
+      // Load data
       await loadDashboard();
     });
     
     async function loadDashboard() {
-      // Load claims
-      await loadClaims();
-      
-      // Load coupons
-      await loadCoupons();
+      await Promise.all([loadClaims(), loadCoupons()]);
     }
     
     async function loadClaims() {
-      const tbody = document.getElementById('claims-tbody');
-      const noClaims = document.getElementById('no-claims');
-      const table = document.getElementById('claims-table');
-      
       const result = await app.getUserClaims(currentUser.id);
+      const container = document.getElementById('claims-list');
+      const noClaims = document.getElementById('no-claims');
       
       if (!result.success) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-              Unable to load claims. <button onclick="loadClaims()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline;">Retry</button>
-            </td>
-          </tr>
-        `;
+        container.innerHTML = `<p style="text-align: center; color: var(--text-secondary);">Failed to load claims</p>`;
         return;
       }
       
@@ -187,62 +136,40 @@
       document.getElementById('pending-claims').textContent = claims.filter(c => c.status === 'pending' || c.status === 'processing').length;
       
       if (claims.length === 0) {
-        table.style.display = 'none';
+        container.style.display = 'none';
         noClaims.style.display = 'block';
         return;
       }
       
-      table.style.display = 'table';
+      container.style.display = 'block';
       noClaims.style.display = 'none';
       
-      tbody.innerHTML = claims.map(claim => {
-        const statusClass = {
-          'pending': 'status-pending',
-          'processing': 'status-processing',
-          'completed': 'status-completed',
-          'rejected': 'status-rejected'
-        }[claim.status] || 'status-pending';
-        
-        const statusIcon = {
-          'pending': '⏳',
-          'processing': '⚙️',
-          'completed': '✓',
-          'rejected': '✕'
-        }[claim.status] || '⏳';
-        
-        return `
-          <tr>
-            <td>
-              <strong>${claim.giftcards?.name || 'Unknown'}</strong>
-              <br><small style="color: var(--text-muted);">${claim.giftcards?.brand || ''}</small>
-            </td>
-            <td>${app.formatCurrency(claim.giftcards?.amount || 0)}</td>
-            <td>${app.formatDate(claim.submitted_at)}</td>
-            <td>
-              <span class="status-badge ${statusClass}">
-                ${statusIcon} ${claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
-              </span>
-            </td>
-            <td>
-              ${claim.coupons?.code ? `<code style="background: var(--bg-glass); padding: 4px 8px; border-radius: 4px; font-family: monospace;">${claim.coupons.code}</code>` : '-'}
-            </td>
-          </tr>
-        `;
-      }).join('');
+      container.innerHTML = claims.map(claim => `
+        <div class="claim-item">
+          <div class="claim-info">
+            <div class="claim-icon" style="background: ${claim.rewards?.gradient || 'var(--gradient-blue)'};">
+              ${claim.rewards?.icon || '🎁'}
+            </div>
+            <div class="claim-details">
+              <h4>${claim.rewards?.name || 'Reward'}</h4>
+              <p>${app.formatDate(claim.submitted_at)}</p>
+            </div>
+          </div>
+          <span class="status status-${claim.status}">
+            ${claim.status === 'pending' ? '⏳' : claim.status === 'processing' ? '⚙️' : claim.status === 'completed' ? '✓' : '✕'}
+            ${claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
+          </span>
+        </div>
+      `).join('');
     }
     
     async function loadCoupons() {
-      const container = document.getElementById('coupons-container');
+      const result = await app.getUserCoupons(currentUser.id);
+      const container = document.getElementById('coupons-grid');
       const noCoupons = document.getElementById('no-coupons');
       
-      const result = await app.getUserCoupons(currentUser.id);
-      
       if (!result.success) {
-        container.innerHTML = `
-          <div class="glass-card" style="padding: 40px; text-align: center; grid-column: 1 / -1;">
-            <p style="color: var(--text-secondary);">Unable to load coupons</p>
-          </div>
-        `;
+        container.innerHTML = `<p style="text-align: center; color: var(--text-secondary);">Failed to load coupons</p>`;
         return;
       }
       
@@ -258,29 +185,16 @@
       noCoupons.style.display = 'none';
       
       container.innerHTML = coupons.map(coupon => `
-        <div class="glass-card" style="padding: 24px; position: relative;">
-          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, ${coupon.giftcards?.color_start || '#667eea'}, ${coupon.giftcards?.color_end || '#764ba2'}); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-              🎁
-            </div>
-            <div>
-              <h4 style="margin: 0;">${coupon.giftcards?.name || 'Gift Card'}</h4>
-              <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 14px;">${app.formatCurrency(coupon.amount)}</p>
-            </div>
+        <div class="reward-card" style="--card-gradient: ${coupon.rewards?.gradient || 'var(--gradient-blue)'};">
+          <div class="reward-badge">Active</div>
+          <div class="reward-card-content">
+            <div class="reward-icon">${coupon.rewards?.icon || '🎁'}</div>
+            <h3 class="reward-name">${coupon.rewards?.name || 'Reward'}</h3>
+            <div class="reward-amount">${coupon.code}</div>
+            <button class="btn btn-primary w-full" onclick="app.copyToClipboard('${coupon.code}')" style="margin-top: 16px; padding: 10px 20px; font-size: 14px;">
+              Copy Code
+            </button>
           </div>
-          
-          <div class="coupon-display" style="margin: 0 0 16px; padding: 16px;">
-            <div style="font-size: 24px; font-weight: 800; font-family: monospace; letter-spacing: 2px; background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">
-              ${coupon.code}
-            </div>
-            <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">
-              Generated: ${app.formatDate(coupon.generated_at)}
-            </p>
-          </div>
-          
-          <button class="btn btn-primary w-full" onclick="app.copyToClipboard('${coupon.code}')">
-            Copy Code
-          </button>
         </div>
       `).join('');
     }
@@ -291,6 +205,8 @@
       localStorage.removeItem('giftcard_claims');
       window.location.href = 'index.html';
     }
+    
+    window.logout = logout;
   </script>
 </body>
 </html>

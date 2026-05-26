@@ -427,5 +427,95 @@ window.app = {
   formatCurrency,
   formatDate,
   setLoading,
-  copyToClipboard
+  copyToClipboard,
+  showToast,
+  getRewards,
+  addReward,
+  updateReward,
+  deleteReward
 };
+
+// ============================================
+// TOAST NOTIFICATIONS
+// ============================================
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <span style="font-size: 18px;">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+    <span>${message}</span>
+  `;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+// ============================================
+// REWARDS FUNCTIONS (for Apple-inspired version)
+// ============================================
+async function getRewards() {
+  try {
+    const { data, error } = await supabase
+      .from('rewards')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function addReward(reward) {
+  try {
+    const { data, error } = await supabase
+      .from('rewards')
+      .insert([reward])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function updateReward(id, updates) {
+  try {
+    const { data, error } = await supabase
+      .from('rewards')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function deleteReward(id) {
+  try {
+    const { error } = await supabase
+      .from('rewards')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
