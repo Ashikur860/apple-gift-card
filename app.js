@@ -212,7 +212,7 @@ async function getUserClaims(userId) {
       .from('claims')
       .select(`
         *,
-        giftcards (name, brand, amount)
+        rewards (name, icon, amount, color_start, color_end)
       `)
       .eq('user_id', userId)
       .order('submitted_at', { ascending: false });
@@ -230,7 +230,7 @@ async function getAllClaims() {
       .from('claims')
       .select(`
         *,
-        giftcards (name, brand, amount),
+        rewards (name, icon, amount, color_start, color_end),
         users (full_name, email)
       `)
       .order('submitted_at', { ascending: false });
@@ -295,7 +295,7 @@ async function getUserCoupons(userId) {
       .from('coupons')
       .select(`
         *,
-        giftcards (name, brand, amount)
+        rewards (name, icon, amount, color_start, color_end)
       `)
       .eq('user_id', userId)
       .order('generated_at', { ascending: false });
@@ -399,6 +399,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initSupabase();
 });
 
+async function getRewardById(id) {
+  try {
+    const { data, error } = await supabase
+      .from('rewards')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 // Make functions available globally
 window.app = {
   supabase,
@@ -430,6 +445,7 @@ window.app = {
   copyToClipboard,
   showToast,
   getRewards,
+  getRewardById,
   addReward,
   updateReward,
   deleteReward
