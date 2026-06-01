@@ -30,10 +30,10 @@ CREATE POLICY "Users can update own profile" ON public.users
 CREATE POLICY "Enable insert for authenticated users only" ON public.users
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Admin can view all users
+-- Admin can view all users (using auth.uid() directly to avoid recursion)
 CREATE POLICY "Admin can view all users" ON public.users
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
   );
 
 -- ============================================
@@ -59,7 +59,7 @@ CREATE POLICY "Anyone can view active rewards" ON public.rewards
 
 CREATE POLICY "Admin full access on rewards" ON public.rewards
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
   );
 
 -- ============================================
@@ -93,12 +93,12 @@ CREATE POLICY "Users can create claims" ON public.claims
 
 CREATE POLICY "Admin can view all claims" ON public.claims
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
   );
 
 CREATE POLICY "Admin can update claims" ON public.claims
   FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
   );
 
 -- ============================================
@@ -123,7 +123,7 @@ CREATE POLICY "Users can view own coupons" ON public.coupons
 
 CREATE POLICY "Admin can view all coupons" ON public.coupons
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
   );
 
 -- ============================================
