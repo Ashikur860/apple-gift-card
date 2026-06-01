@@ -24,8 +24,18 @@
         <a href="dashboard.html" class="nav-link">Dashboard</a>
         <button class="btn btn-secondary" style="padding: 8px 20px; font-size: 14px;" onclick="logout()">Sign Out</button>
       </div>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">☰</button>
     </div>
   </nav>
+  
+  <!-- Mobile Navigation Menu -->
+  <div class="mobile-nav-menu" id="mobile-nav-menu">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="index.html#rewards" class="nav-link">Rewards</a>
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="#" class="nav-link" onclick="logout()">Sign Out</a>
+  </div>
 
   <!-- Dashboard -->
   <div class="dashboard">
@@ -207,6 +217,30 @@
     }
     
     window.logout = logout;
+    
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-nav-menu');
+    const closeBtn = document.getElementById('mobile-nav-close');
+    
+    if (menuBtn && menu && closeBtn) {
+      menuBtn.addEventListener('click', () => {
+        menu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+      
+      closeBtn.addEventListener('click', () => {
+        menu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          menu.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+    }
   </script>
 </body>
 </html>

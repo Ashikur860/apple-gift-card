@@ -8,7 +8,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFAQ();
   setupClaimForm();
   updateNavbar();
+  setupMobileMenu();
 });
+
+// Mobile Menu Toggle
+function setupMobileMenu() {
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-nav-menu');
+  const closeBtn = document.getElementById('mobile-nav-close');
+  
+  if (menuBtn && menu && closeBtn) {
+    menuBtn.addEventListener('click', () => {
+      menu.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    closeBtn.addEventListener('click', () => {
+      menu.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // Close menu when clicking a link
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+}
 
 // Update Navbar and Footer based on login status
 function updateNavbar() {
