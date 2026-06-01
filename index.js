@@ -354,11 +354,12 @@ function setupClaimForm() {
     setTimeout(async () => {
       const reward = await app.getRewardById ? await app.getRewardById(claimData.reward_id) : { success: true, data: { name: 'Apple Reward', icon: '🍎' } };
       
-      // Generate random coupon code
-      const prefixes = ['APL', 'GFT', 'RWD', 'PRM', 'VIP'];
-      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-      const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-      const code = prefix + '-' + randomPart;
+      // Generate random 14-character alphanumeric coupon code
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 14; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
       
       await app.createCoupon({
         claim_id: result.data.id,
