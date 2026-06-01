@@ -1492,6 +1492,18 @@ body {
   cursor: pointer;
 }
 
+/* Modal Scrollable */
+.modal {
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-content {
+  max-height: none;
+  overflow: visible;
+}
+
 /* Mobile First - Base Styles */
 @media (max-width: 768px) {
   /* Navigation */

