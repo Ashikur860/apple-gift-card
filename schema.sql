@@ -30,11 +30,11 @@ CREATE POLICY "Users can update own profile" ON public.users
 CREATE POLICY "Enable insert for authenticated users only" ON public.users
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Admin can view all users (using auth.uid() directly to avoid recursion)
-CREATE POLICY "Admin can view all users" ON public.users
-  FOR SELECT USING (
-    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
-  );
+-- Disable admin policy to avoid recursion - handle in app code instead
+-- CREATE POLICY "Admin can view all users" ON public.users
+--   FOR SELECT USING (
+--     (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
+--   );
 
 -- ============================================
 -- REWARDS TABLE
@@ -57,10 +57,11 @@ ALTER TABLE public.rewards ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can view active rewards" ON public.rewards
   FOR SELECT USING (is_active = TRUE);
 
-CREATE POLICY "Admin full access on rewards" ON public.rewards
-  FOR ALL USING (
-    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
-  );
+-- Disable admin policy to avoid recursion - handle in app code instead
+-- CREATE POLICY "Admin full access on rewards" ON public.rewards
+--   FOR ALL USING (
+--     (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
+--   );
 
 -- ============================================
 -- CLAIMS TABLE
@@ -91,15 +92,16 @@ CREATE POLICY "Users can view own claims" ON public.claims
 CREATE POLICY "Users can create claims" ON public.claims
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Admin can view all claims" ON public.claims
-  FOR SELECT USING (
-    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
-  );
+-- Disable admin policies to avoid recursion - handle in app code instead
+-- CREATE POLICY "Admin can view all claims" ON public.claims
+--   FOR SELECT USING (
+--     (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
+--   );
 
-CREATE POLICY "Admin can update claims" ON public.claims
-  FOR UPDATE USING (
-    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
-  );
+-- CREATE POLICY "Admin can update claims" ON public.claims
+--   FOR UPDATE USING (
+--     (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
+--   );
 
 -- ============================================
 -- COUPONS TABLE
@@ -121,10 +123,11 @@ ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own coupons" ON public.coupons
   FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Admin can view all coupons" ON public.coupons
-  FOR SELECT USING (
-    (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
-  );
+-- Disable admin policy to avoid recursion - handle in app code instead
+-- CREATE POLICY "Admin can view all coupons" ON public.coupons
+--   FOR SELECT USING (
+--     (SELECT role FROM public.users WHERE id = auth.uid()) = 'admin'
+--   );
 
 -- ============================================
 -- INSERT SAMPLE REWARDS
