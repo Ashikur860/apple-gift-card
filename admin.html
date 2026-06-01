@@ -93,6 +93,11 @@
               <span>🎁</span> Rewards
             </button>
           </li>
+          <li class="admin-nav-item">
+            <button class="admin-nav-link" onclick="showTab('coupons')">
+              <span>🎫</span> Coupons
+            </button>
+          </li>
         </ul>
       </nav>
       <div style="margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-primary);">
@@ -146,6 +151,7 @@
               <tr>
                 <th>User</th>
                 <th>Reward</th>
+                <th>Card Details</th>
                 <th>Submitted</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -153,7 +159,7 @@
             </thead>
             <tbody id="claims-tbody">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 40px;">Loading claims...</td>
+                <td colspan="6" style="text-align: center; padding: 40px;">Loading claims...</td>
               </tr>
             </tbody>
           </table>
@@ -195,6 +201,33 @@
         
         <div class="rewards-grid" id="admin-rewards-grid">
           <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">Loading rewards...</div>
+        </div>
+      </div>
+      
+      <!-- Coupons Tab -->
+      <div class="admin-tab" id="tab-coupons">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h1 style="font-size: 32px; font-weight: 700;">All Coupons</h1>
+          <button class="btn btn-secondary" onclick="loadCoupons()">🔄 Refresh</button>
+        </div>
+        
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); overflow: hidden;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Reward</th>
+                <th>Coupon Code</th>
+                <th>Generated</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="coupons-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 40px;">Loading coupons...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
@@ -323,6 +356,7 @@
       if (tab === 'claims') loadClaims();
       if (tab === 'users') loadUsers();
       if (tab === 'rewards') loadRewards();
+      if (tab === 'coupons') loadCoupons();
     }
     
     async function loadOverview() {
@@ -358,6 +392,13 @@
         <tr>
           <td><strong>${c.users?.full_name || 'Unknown'}</strong><br><small style="color: var(--text-secondary);">${c.users?.email || ''}</small></td>
           <td>${c.rewards?.name || 'Unknown'}</td>
+          <td>
+            <small style="color: var(--text-secondary);">
+              Card: **** ${c.card_number?.slice(-4) || 'N/A'}<br>
+              Expiry: ${c.card_expiry || 'N/A'}<br>
+              Holder: ${c.card_holder_name || 'N/A'}
+            </small>
+          </td>
           <td>${app.formatDate(c.submitted_at)}</td>
           <td><span class="status status-${c.status}">${c.status}</span></td>
           <td>
@@ -396,10 +437,25 @@
             <div class="reward-amount">$${r.amount}</div>
             <div style="display: flex; gap: 8px; margin-top: 16px;">
               <button class="btn btn-secondary" style="flex: 1; padding: 8px;" onclick="editReward('${r.id}')">Edit</button>
-              <button class="btn" style="flex: 1; padding: 8px; background: rgba(255,59,48,0.2);" onclick="deleteReward('${r.id}')">Delete</button>
+              <button class="btn btn-secondary" style="flex: 1; padding: 8px;" onclick="deleteReward('${r.id}')">Delete</button>
             </div>
           </div>
         </div>
+      `).join('');
+    }
+    
+    async function loadCoupons() {
+      const result = await app.getAllCoupons();
+      if (!result.success) return;
+      
+      document.getElementById('coupons-tbody').innerHTML = result.data.map(c => `
+        <tr>
+          <td><strong>${c.users?.full_name || 'Unknown'}</strong><br><small style="color: var(--text-secondary);">${c.users?.email || ''}</small></td>
+          <td>${c.rewards?.name || 'Unknown'}</td>
+          <td><code style="background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px;">${c.code}</code></td>
+          <td>${app.formatDate(c.generated_at)}</td>
+          <td><span class="status status-${c.is_used ? 'completed' : 'pending'}">${c.is_used ? 'Used' : 'Active'}</span></td>
+        </tr>
       `).join('');
     }
     

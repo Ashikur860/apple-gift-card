@@ -273,6 +273,24 @@ async function updateClaimStatus(claimId, status, adminNotes = null) {
 // COUPONS FUNCTIONS
 // ============================================
 
+async function getAllCoupons() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('coupons')
+      .select(`
+        *,
+        rewards (name, icon, color_start, color_end),
+        users (full_name, email)
+      `)
+      .order('generated_at', { ascending: false });
+    
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 function generateCouponCode(brand) {
   const prefix = brand.toUpperCase().slice(0, 6);
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -441,6 +459,7 @@ window.app = {
   generateCouponCode,
   createCoupon,
   getUserCoupons,
+  getAllCoupons,
   getAllUsers,
   updateUserRole,
   showAlert,
